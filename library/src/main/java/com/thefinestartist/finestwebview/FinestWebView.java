@@ -26,6 +26,7 @@ import com.wuadam.awesomewebview.R;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Leonardo on 11/21/15.
@@ -168,6 +169,7 @@ public class FinestWebView {
         protected String encoding;
         protected String data;
         protected String url;
+        protected Map<String,String> extraHeaders;
 
         public Builder(@NonNull Activity activity) {
             this.context = activity;
@@ -889,6 +891,11 @@ public class FinestWebView {
 
         public Builder webViewCookieEnabled(boolean webViewCookieEnabled) {
             this.webViewCookieEnabled = webViewCookieEnabled;
+            return this;
+        }
+
+        public Builder setHeader(Map<String,String> extraHeaders) {
+            this.extraHeaders = extraHeaders;
             return this;
         }
 

@@ -64,6 +64,7 @@ import com.thefinestartist.utils.ui.ViewUtil;
 import com.wuadam.awesomewebview.R;
 
 import java.util.List;
+import java.util.Map;
 
 //MailTo Imports
 
@@ -202,6 +203,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected String encoding;
     protected String data;
     protected String url;
+    protected Map<String,String> extraHeaders;
     protected CoordinatorLayout coordinatorLayout;
     protected AppBarLayout appBar;
     protected Toolbar toolbar;
@@ -442,6 +444,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         encoding = builder.encoding;
         data = builder.data;
         url = builder.url;
+        extraHeaders = builder.extraHeaders;
     }
 
     protected void bindViews() {
@@ -760,7 +763,13 @@ public class FinestWebViewActivity extends AppCompatActivity
 
             if (data != null) {
                 webView.loadData(data, mimeType, encoding);
-            } else if (url != null) webView.loadUrl(url);
+            } else if (url != null) {
+                if (extraHeaders == null) {
+                    webView.loadUrl(url);
+                }else {
+                    webView.loadUrl(url, extraHeaders);
+                }
+            }
         }
 
         { // SwipeRefreshLayout
