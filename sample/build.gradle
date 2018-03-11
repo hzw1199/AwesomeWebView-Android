@@ -1,32 +1,32 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 26
+    compileSdkVersion 26
 
-  defaultConfig {
-    applicationId "com.wuadam.awesomewebview.sample"
-    minSdkVersion 14
-    targetSdkVersion 25
-    versionCode 1
-    versionName '1.0'
-    vectorDrawables.useSupportLibrary = true
-    multiDexEnabled true
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    defaultConfig {
+        applicationId "com.wuadam.awesomewebview.sample"
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionCode 1
+        versionName '1.0'
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
-  }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:multidex:1.0.3'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:multidex:1.0.3'
 
-  implementation project(':library')
+    implementation project(':library')
 
-  implementation "com.android.support:support-annotations:27.1.0"
-  implementation "com.android.support:appcompat-v7:26.1.0"
-  implementation "com.android.support:design:26.1.0"
+    implementation "com.android.support:support-annotations:27.1.0"
+    implementation "com.android.support:appcompat-v7:26.1.0"
+    implementation "com.android.support:design:26.1.0"
 }

@@ -29,9 +29,9 @@
         android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
         android:configChanges="keyboardHidden|orientation|screenSize"
         android:screenOrientation="sensor"
-        android:theme="@style/FinestWebViewTheme.Light"/>
+        android:theme="@style/FinestWebViewTheme.Light"
+        android:hardwareAccelerated="true" />
 
-    <activity android:name="com.thefinestartist.finestwebview.sample.WebViewActivity"/>
   </application>
 
 </manifest>

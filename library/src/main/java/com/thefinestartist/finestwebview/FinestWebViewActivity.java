@@ -56,6 +56,8 @@ import com.thefinestartist.finestwebview.helpers.TypefaceHelper;
 import com.thefinestartist.finestwebview.helpers.UrlParser;
 import com.thefinestartist.finestwebview.listeners.BroadCastManager;
 import com.thefinestartist.finestwebview.views.ShadowLayout;
+import com.thefinestartist.finestwebview.views.VideoEnabledWebChromeClient;
+import com.thefinestartist.finestwebview.views.VideoEnabledWebView;
 import com.thefinestartist.utils.etc.APILevel;
 import com.thefinestartist.utils.service.ClipboardManagerUtil;
 import com.thefinestartist.utils.ui.DisplayUtil;
@@ -208,7 +210,8 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected AppCompatImageButton back;
     protected AppCompatImageButton forward;
     protected AppCompatImageButton more;
-    protected WebView webView;
+    protected VideoEnabledWebView webView;
+    protected MyWebChromeClient webChromeClient;
     protected View gradient;
     protected View divider;
     protected ProgressBar progressBar;
@@ -467,7 +470,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         menuOpenWithTv = (TextView) findViewById(R.id.menuOpenWithTv);
 
         webLayout = (FrameLayout) findViewById(R.id.webLayout);
-        webView = new WebView(this);
+        webView = new VideoEnabledWebView(this);
         webLayout.addView(webView);
     }
 
@@ -603,14 +606,54 @@ public class FinestWebViewActivity extends AppCompatActivity
             more.setEnabled(!disableIconMenu);
         }
 
-        {  // Cookie
+        { // Cookie
             if (webViewCookieEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
             }
         }
 
         { // WebView
-            webView.setWebChromeClient(new MyWebChromeClient());
+            // Initialize the VideoEnabledWebChromeClient and set event handlers
+            View nonVideoLayout = webLayout; // Your own view, read class comments
+            ViewGroup videoLayout = (ViewGroup)findViewById(R.id.videoLayout); // Your own view, read class comments
+            //noinspection all
+            View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
+            webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView);
+            webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
+            {
+                @Override
+                public void toggledFullscreen(boolean fullscreen)
+                {
+                    // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+                    if (fullscreen)
+                    {
+                        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                        attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                        getWindow().setAttributes(attrs);
+                        if (android.os.Build.VERSION.SDK_INT >= 14)
+                        {
+                            //noinspection all
+                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                        }
+                    }
+                    else
+                    {
+                        WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                        attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                        attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                        getWindow().setAttributes(attrs);
+                        if (android.os.Build.VERSION.SDK_INT >= 14)
+                        {
+                            //noinspection all
+                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                        }
+                    }
+
+                }
+            });
+
+            webView.setWebChromeClient(webChromeClient);
             webView.setWebViewClient(new MyWebViewClient());
             webView.setDownloadListener(downloadListener);
 
@@ -925,6 +968,9 @@ public class FinestWebViewActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if (webChromeClient.onBackPressed()){
+            return;
+        }
         if (menuLayout.getVisibility() == View.VISIBLE) {
             hideMenu();
         } else if (backPressToClose || !webView.canGoBack()) {
@@ -1090,7 +1136,11 @@ public class FinestWebViewActivity extends AppCompatActivity
         }, ViewConfiguration.getZoomControlsTimeout() + 1000L);
     }
 
-    public class MyWebChromeClient extends WebChromeClient {
+    public class MyWebChromeClient extends VideoEnabledWebChromeClient {
+
+        public MyWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, VideoEnabledWebView webView) {
+            super(activityNonVideoView, activityVideoView, loadingView, webView);
+        }
 
         @Override
         public void onProgressChanged(WebView view, int progress) {
