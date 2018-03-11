@@ -37,7 +37,6 @@ import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -48,7 +47,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nineoldandroids.view.ViewHelper;
 import com.thefinestartist.converters.UnitConverter;
 import com.thefinestartist.finestwebview.enums.Position;
 import com.thefinestartist.finestwebview.helpers.BitmapHelper;
@@ -195,6 +193,8 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected Boolean webViewOffscreenPreRaster;
     protected Boolean webViewAppJumpEnabled;
     protected Boolean webViewCookieEnabled;
+    protected Boolean webViewCameraEnabled;
+    protected Boolean webViewAudioEnabled;
 
     protected String injectJavaScript;
 
@@ -423,6 +423,8 @@ public class FinestWebViewActivity extends AppCompatActivity
         webViewOffscreenPreRaster = builder.webViewOffscreenPreRaster;
         webViewAppJumpEnabled = builder.webViewAppJumpEnabled != null ? builder.webViewAppJumpEnabled : true;
         webViewCookieEnabled = builder.webViewCookieEnabled != null ? builder.webViewCookieEnabled : true;
+        webViewCameraEnabled = builder.webViewCameraEnabled != null ? builder.webViewCameraEnabled : true;
+        webViewAudioEnabled = builder.webViewAudioEnabled != null ? builder.webViewAudioEnabled : true;
 
         injectJavaScript = builder.injectJavaScript;
 
@@ -1181,6 +1183,21 @@ public class FinestWebViewActivity extends AppCompatActivity
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(final PermissionRequest request) {
+            for (String res: request.getResources()){
+                if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)){
+                    if (! webViewAudioEnabled){
+                        request.deny();
+                        return;
+                    }
+                }
+                if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)){
+                    if (! webViewCameraEnabled){
+                        request.deny();
+                        return;
+                    }
+                }
+            }
+
             PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
                 @Override
                 public void onAllGranted(boolean sync) {

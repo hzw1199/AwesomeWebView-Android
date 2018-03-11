@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.AnimRes;
-import android.support.annotation.ArrayRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
@@ -12,7 +11,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
-import android.support.design.widget.AppBarLayout.LayoutParams.ScrollFlags;
 import android.webkit.WebSettings;
 
 import com.thefinestartist.Base;
@@ -157,6 +155,8 @@ public class FinestWebView {
         protected Boolean webViewOffscreenPreRaster;
         protected Boolean webViewAppJumpEnabled;
         protected Boolean webViewCookieEnabled;
+        protected Boolean webViewCameraEnabled;
+        protected Boolean webViewAudioEnabled;
 
         protected String injectJavaScript;
 
@@ -853,6 +853,16 @@ public class FinestWebView {
 
         public Builder webViewCookieEnabled(boolean webViewCookieEnabled) {
             this.webViewCookieEnabled = webViewCookieEnabled;
+            return this;
+        }
+
+        public Builder webViewCameraEnabled(boolean webViewCameraEnabled) {
+            this.webViewCameraEnabled = webViewCameraEnabled;
+            return this;
+        }
+
+        public Builder webViewAudioEnabled(boolean webViewAudioEnabled) {
+            this.webViewAudioEnabled = webViewAudioEnabled;
             return this;
         }
 
