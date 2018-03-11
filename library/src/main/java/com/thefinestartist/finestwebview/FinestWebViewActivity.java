@@ -681,7 +681,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                         }
                         // 弹出保存图片的对话框
                         AlertDialog.Builder builder = new AlertDialog.Builder(FinestWebViewActivity.this);
-                        final String items[] = {getResources().getString(R.string.save_photo)};
+                        final String items[] = {getResources().getString(stringResSavePhoto)};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -695,7 +695,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                                             @Override
                                             public void getDownPath(String s) {
                                                 if (showToastPhotoSavedTo) {
-                                                    Toast.makeText(FinestWebViewActivity.this, getResources().getString(R.string.photo_saved_to) + s, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(FinestWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + s, Toast.LENGTH_LONG).show();
                                                 }
                                                 // 最后通知图库更新
                                                 getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + s)));
