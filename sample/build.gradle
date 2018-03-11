@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdkVersion 26
 
   defaultConfig {
-    applicationId "com.thefinestartist.finestwebview.sample"
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode rootProject.ext.versionCode
-    versionName rootProject.ext.versionName
+    applicationId "com.wuadam.awesomewebview.sample"
+    minSdkVersion 14
+    targetSdkVersion 25
+    versionCode 1
+    versionName '1.0'
     vectorDrawables.useSupportLibrary = true
     multiDexEnabled true
   }
@@ -22,23 +21,12 @@ android {
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile 'com.android.support:multidex:1.0.1'
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation 'com.android.support:multidex:1.0.3'
 
-  compile project(':library')
-  //    compile "com.thefinestartist:finestwebview:${rootProject.ext.versionName}"
+  implementation project(':library')
 
-  compile "com.android.support:support-annotations:${rootProject.ext.supportLibVersion}"
-  compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-  //    compile "com.android.support:support-vector-drawable:${rootProject.ext.supportLibVersion}"
-  //    compile "com.android.support:palette-v7:${rootProject.ext.supportLibVersion}"
-  compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
-  //    compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-
-  //    compile "com.google.android.gms:play-services-base:${rootProject.ext.playLibVersion}"
-  //    compile "com.google.android.gms:play-services-gcm:${rootProject.ext.playLibVersion}"
-  //    compile "com.google.android.gms:play-services-plus:${rootProject.ext.playLibVersion}"
-  //    compile "com.google.android.gms:play-services-analytics:${rootProject.ext.playLibVersion}"
-  //    compile "com.google.android.gms:play-services-location:${rootProject.ext.playLibVersion}"
-  //    compile "com.google.android.gms:play-services-maps:${rootProject.ext.playLibVersion}"
+  implementation "com.android.support:support-annotations:27.1.0"
+  implementation "com.android.support:appcompat-v7:26.1.0"
+  implementation "com.android.support:design:26.1.0"
 }
