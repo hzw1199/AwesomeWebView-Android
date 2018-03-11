@@ -7,6 +7,7 @@
   <string name="open_with">Open with</string>
   <string name="save_photo">Save Photo</string>
   <string name="photo_saved_to">Photo has been saved to </string>
+  <string name="file_chooser">File Chooser</string>
   <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="loading_video">Loading video…</string>
 </resources>

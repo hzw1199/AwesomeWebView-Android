@@ -107,6 +107,8 @@ public class FinestWebView {
         protected Integer stringResSavePhoto;
         protected Boolean showToastPhotoSavedTo;
         protected Integer stringResPhotoSavedTo;
+        protected Boolean fileChooserEnabled;
+        protected Integer stringResFileChooserTitle;
 
         protected Integer animationOpenEnter = R.anim.modal_activity_open_enter;
         protected Integer animationOpenExit = R.anim.modal_activity_open_exit;
@@ -628,6 +630,16 @@ public class FinestWebView {
 
         public Builder stringResPhotoSavedTo(@StringRes int stringResPhotoSavedTo) {
             this.stringResPhotoSavedTo = stringResPhotoSavedTo;
+            return this;
+        }
+
+        public Builder fileChooserEnabled(boolean fileChooserEnabled) {
+            this.fileChooserEnabled = fileChooserEnabled;
+            return this;
+        }
+
+        public Builder stringResFileChooserTitle(@StringRes int stringResFileChooserTitle) {
+            this.stringResFileChooserTitle = stringResFileChooserTitle;
             return this;
         }
 

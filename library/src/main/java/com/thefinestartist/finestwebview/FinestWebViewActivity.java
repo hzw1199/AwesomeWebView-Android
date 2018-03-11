@@ -2,6 +2,7 @@ package com.thefinestartist.finestwebview;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -15,7 +16,9 @@ import android.net.MailTo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
@@ -39,6 +42,7 @@ import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
+import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -68,7 +72,11 @@ import com.thefinestartist.utils.ui.DisplayUtil;
 import com.thefinestartist.utils.ui.ViewUtil;
 import com.wuadam.awesomewebview.R;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -151,6 +159,8 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected int stringResSavePhoto;
     protected boolean showToastPhotoSavedTo;
     protected int stringResPhotoSavedTo;
+    protected boolean fileChooserEnabled;
+    protected int stringResFileChooserTitle;
 
     protected int animationCloseEnter;
     protected int animationCloseExit;
@@ -203,6 +213,12 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected Boolean webViewCookieEnabled;
     protected Boolean webViewCameraEnabled;
     protected Boolean webViewAudioEnabled;
+
+    private String filePickerCamMessage;
+    private ValueCallback<Uri> filePickerFileMessage;
+    private ValueCallback<Uri[]> filePickerFilePath;
+    private final static int FILE_PICKER_REQ_CODE = 1;
+    private String FILE_TYPE = "*/*";
 
     protected String injectJavaScript;
 
@@ -375,6 +391,9 @@ public class FinestWebViewActivity extends AppCompatActivity
         showToastPhotoSavedTo = builder.showToastPhotoSavedTo != null ? builder.showToastPhotoSavedTo : true;
         stringResPhotoSavedTo =
                 builder.stringResPhotoSavedTo != null ? builder.stringResPhotoSavedTo : R.string.photo_saved_to;
+        fileChooserEnabled = builder.fileChooserEnabled != null ? builder.fileChooserEnabled : true;
+        stringResFileChooserTitle =
+                builder.stringResFileChooserTitle != null ? builder.stringResFileChooserTitle : R.string.file_chooser;
 
         animationCloseEnter = builder.animationCloseEnter != null ? builder.animationCloseEnter
                 : R.anim.modal_activity_close_enter;
@@ -1266,6 +1285,129 @@ public class FinestWebViewActivity extends AppCompatActivity
                 }
             }, parsePermission(request.getResources()));
         }
+
+        //Handling input[type="file"] requests for android API 16+
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            if (!fileChooserEnabled) {
+                uploadMsg.onReceiveValue(null);
+                return;
+            }
+            filePickerFileMessage = uploadMsg;
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType(acceptType);
+            startActivityForResult(Intent.createChooser(i, getResources().getString(stringResFileChooserTitle)), FILE_PICKER_REQ_CODE);
+        }
+
+        //Handling input[type="file"] requests for android API 21+
+        @Override
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            if (!fileChooserEnabled) {
+                filePathCallback.onReceiveValue(null);
+                return true;
+            }
+            getFile();
+            if (filePickerFilePath != null) {
+                filePickerFilePath.onReceiveValue(null);
+            }
+            filePickerFilePath = filePathCallback;
+            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            contentSelectionIntent.setType(FILE_TYPE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                contentSelectionIntent.putExtra(Intent.EXTRA_MIME_TYPES, fileChooserParams.getAcceptTypes());
+            }
+            Intent[] intentArray;
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(FinestWebViewActivity.this.getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImage();
+                    takePictureIntent.putExtra("PhotoPath", filePickerCamMessage);
+                } catch (IOException ex) {
+//                            Log.e("", "Image file creation failed", ex);
+                }
+                if (photoFile != null) {
+                    filePickerCamMessage = "file:" + photoFile.getAbsolutePath();
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                } else {
+                    takePictureIntent = null;
+                }
+            }
+            if (takePictureIntent != null) {
+                intentArray = new Intent[]{takePictureIntent};
+            } else {
+                intentArray = new Intent[0];
+            }
+            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+            chooserIntent.putExtra(Intent.EXTRA_TITLE, getResources().getString(stringResFileChooserTitle));
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+            startActivityForResult(chooserIntent, FILE_PICKER_REQ_CODE);
+            return true;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+            Uri[] results = null;
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == FILE_PICKER_REQ_CODE) {
+                    if (null == filePickerFilePath) {
+                        return;
+                    }
+                    if (intent == null) {
+                        if (filePickerCamMessage != null) {
+                            results = new Uri[]{Uri.parse(filePickerCamMessage)};
+                        }
+                    } else {
+                        String dataString = intent.getDataString();
+                        if (dataString != null) {
+                            results = new Uri[]{Uri.parse(dataString)};
+                        }
+                    }
+                }
+            }
+            filePickerFilePath.onReceiveValue(results);
+            filePickerFilePath = null;
+        } else {
+            if (requestCode == FILE_PICKER_REQ_CODE) {
+                if (null == filePickerFileMessage) return;
+                Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+                filePickerFileMessage.onReceiveValue(result);
+                filePickerFileMessage = null;
+            }
+        }
+    }
+
+    //Creating image file for upload
+    private File createImage() throws IOException {
+        @SuppressLint("SimpleDateFormat")
+        String file_name = new SimpleDateFormat("yyyy_mm_ss").format(new Date());
+        String new_name = "file_" + file_name + "_";
+        File sd_directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(new_name, ".jpg", sd_directory);
+    }
+
+    //Checking permission for storage and camera for writing and uploading images
+    private void getFile() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+
+        PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+            @Override
+            public void onAllGranted(boolean sync) {
+
+            }
+
+            @Override
+            public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
+
+            }
+        }, perms);
     }
 
     public class MyWebViewClient extends WebViewClient {
