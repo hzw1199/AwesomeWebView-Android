@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -35,6 +36,7 @@ import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -64,6 +66,7 @@ import com.thefinestartist.utils.ui.DisplayUtil;
 import com.thefinestartist.utils.ui.ViewUtil;
 import com.wuadam.awesomewebview.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -1174,6 +1177,22 @@ public class FinestWebViewActivity extends AppCompatActivity
                 }
             }, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
         }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(final PermissionRequest request) {
+            PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+                @Override
+                public void onAllGranted(boolean sync) {
+                    request.grant(request.getResources());
+                }
+
+                @Override
+                public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
+                    request.deny();
+                }
+            }, parsePermission(request.getResources()));
+        }
     }
 
     public class MyWebViewClient extends WebViewClient {
@@ -1273,5 +1292,23 @@ public class FinestWebViewActivity extends AppCompatActivity
         public void onPageCommitVisible(WebView view, String url) {
             BroadCastManager.onPageCommitVisible(FinestWebViewActivity.this, key, url);
         }
+    }
+
+    protected String[] parsePermission(String[] resource){
+        List<String> permissions = new ArrayList<>();
+        for (String res: resource){
+            if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)){
+                permissions.add(Manifest.permission.RECORD_AUDIO);
+            }
+            if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)){
+                permissions.add(Manifest.permission.CAMERA);
+            }
+        }
+
+        String[] result = new String[permissions.size()];
+        for (int i = 0; i<permissions.size(); i++){
+            result[i] = permissions.get(i);
+        }
+        return result;
     }
 }
