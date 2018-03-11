@@ -159,6 +159,8 @@ public class FinestWebView {
         protected Integer webViewCacheMode;
         protected Integer webViewMixedContentMode;
         protected Boolean webViewOffscreenPreRaster;
+        protected Boolean webViewAppJumpEnabled;
+        protected Boolean webViewCookieEnabled;
 
         protected String injectJavaScript;
 
@@ -877,6 +879,16 @@ public class FinestWebView {
 
         public Builder webViewOffscreenPreRaster(boolean webViewOffscreenPreRaster) {
             this.webViewOffscreenPreRaster = webViewOffscreenPreRaster;
+            return this;
+        }
+
+        public Builder webViewAppJumpEnabled(boolean webViewAppJumpEnabled) {
+            this.webViewAppJumpEnabled = webViewAppJumpEnabled;
+            return this;
+        }
+
+        public Builder webViewCookieEnabled(boolean webViewCookieEnabled) {
+            this.webViewCookieEnabled = webViewCookieEnabled;
             return this;
         }
 

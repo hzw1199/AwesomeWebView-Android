@@ -33,6 +33,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -192,6 +193,8 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected Integer webViewCacheMode;
     protected Integer webViewMixedContentMode;
     protected Boolean webViewOffscreenPreRaster;
+    protected Boolean webViewAppJumpEnabled;
+    protected Boolean webViewCookieEnabled;
 
     protected String injectJavaScript;
 
@@ -430,6 +433,8 @@ public class FinestWebViewActivity extends AppCompatActivity
         webViewCacheMode = builder.webViewCacheMode;
         webViewMixedContentMode = builder.webViewMixedContentMode;
         webViewOffscreenPreRaster = builder.webViewOffscreenPreRaster;
+        webViewAppJumpEnabled = builder.webViewAppJumpEnabled != null ? builder.webViewAppJumpEnabled : true;
+        webViewCookieEnabled = builder.webViewCookieEnabled != null ? builder.webViewCookieEnabled : true;
 
         injectJavaScript = builder.injectJavaScript;
 
@@ -622,6 +627,12 @@ public class FinestWebViewActivity extends AppCompatActivity
                 more.setVisibility(View.GONE);
             }
             more.setEnabled(!disableIconMenu);
+        }
+
+        {  // Cookie
+            if (webViewCookieEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+            }
         }
 
         { // WebView
@@ -1280,8 +1291,22 @@ public class FinestWebViewActivity extends AppCompatActivity
                 startActivity(emailIntent);
 
                 return true;
-            } else {
+            } else if (url.startsWith("http") || url.startsWith("https") || url.startsWith("ftp")){
                 return super.shouldOverrideUrlLoading(view, url);
+            }else {
+                if (webViewAppJumpEnabled) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        view.getContext().startActivity(intent);
+                        return true; // If we return true, onPageStarted, onPageFinished won't be called.
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                        return true;
+                    }
+                }else {
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
             }
         }
 
