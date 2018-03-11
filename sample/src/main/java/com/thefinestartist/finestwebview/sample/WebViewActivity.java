@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
+import com.wuadam.awesomewebview.sample.R;
+
 /**
  * Created by TheFinestArtist on 3/11/16.
  */

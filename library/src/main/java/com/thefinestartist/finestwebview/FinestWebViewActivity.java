@@ -1,5 +1,6 @@
 package com.thefinestartist.finestwebview;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -33,6 +34,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.DownloadListener;
+import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -49,6 +51,7 @@ import com.thefinestartist.converters.UnitConverter;
 import com.thefinestartist.finestwebview.enums.Position;
 import com.thefinestartist.finestwebview.helpers.BitmapHelper;
 import com.thefinestartist.finestwebview.helpers.ColorHelper;
+import com.thefinestartist.finestwebview.helpers.PermissionHelper;
 import com.thefinestartist.finestwebview.helpers.TypefaceHelper;
 import com.thefinestartist.finestwebview.helpers.UrlParser;
 import com.thefinestartist.finestwebview.listeners.BroadCastManager;
@@ -57,6 +60,9 @@ import com.thefinestartist.utils.etc.APILevel;
 import com.thefinestartist.utils.service.ClipboardManagerUtil;
 import com.thefinestartist.utils.ui.DisplayUtil;
 import com.thefinestartist.utils.ui.ViewUtil;
+import com.wuadam.awesomewebview.R;
+
+import java.util.List;
 
 //MailTo Imports
 
@@ -1188,6 +1194,21 @@ public class FinestWebViewActivity extends AppCompatActivity
         public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
             BroadCastManager.onReceivedTouchIconUrl(FinestWebViewActivity.this, key, url, precomposed);
         }
+
+        @Override
+        public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
+            PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+                @Override
+                public void onAllGranted(boolean sync) {
+                    callback.invoke(origin, true, true);
+                }
+
+                @Override
+                public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
+                    callback.invoke(origin, false, false);
+                }
+            }, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
     }
 
     public class MyWebViewClient extends WebViewClient {
@@ -1219,7 +1240,9 @@ public class FinestWebViewActivity extends AppCompatActivity
             }
 
             if (injectJavaScript != null) {
-                webView.evaluateJavascript(injectJavaScript, null);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    webView.evaluateJavascript(injectJavaScript, null);
+                }
             }
         }
 

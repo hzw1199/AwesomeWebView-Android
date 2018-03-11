@@ -6,6 +6,7 @@ import android.view.Gravity;
 import android.view.View;
 
 import com.thefinestartist.finestwebview.FinestWebView;
+import com.wuadam.awesomewebview.sample.R;
 
 public class MainActivity extends AppCompatActivity {
 

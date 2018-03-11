@@ -25,4 +25,7 @@ dependencies {
   implementation('com.thefinestartist:utils:0.9.0') {
     exclude group: 'com.android.support'
   }
+  implementation ('com.yanzhenjie:permission:1.1.2'){
+    exclude group: 'com.android.support'
+  }
 }

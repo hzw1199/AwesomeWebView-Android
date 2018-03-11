@@ -21,6 +21,7 @@ import com.thefinestartist.finestwebview.listeners.BroadCastManager;
 import com.thefinestartist.finestwebview.listeners.WebViewListener;
 import com.thefinestartist.utils.content.Ctx;
 import com.thefinestartist.utils.content.Res;
+import com.wuadam.awesomewebview.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;

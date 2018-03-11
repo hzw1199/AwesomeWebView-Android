@@ -13,7 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.thefinestartist.finestwebview.R;
+import com.wuadam.awesomewebview.R;
+
 
 /**
  * Created by Leonardo on 11/26/15.
