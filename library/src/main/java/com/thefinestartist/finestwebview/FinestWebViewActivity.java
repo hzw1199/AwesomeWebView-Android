@@ -2,6 +2,7 @@ package com.thefinestartist.finestwebview;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -21,6 +22,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
@@ -46,11 +48,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.thefinestartist.converters.UnitConverter;
 import com.thefinestartist.finestwebview.enums.Position;
 import com.thefinestartist.finestwebview.helpers.BitmapHelper;
 import com.thefinestartist.finestwebview.helpers.ColorHelper;
+import com.thefinestartist.finestwebview.helpers.DownPicUtil;
 import com.thefinestartist.finestwebview.helpers.PermissionHelper;
 import com.thefinestartist.finestwebview.helpers.TypefaceHelper;
 import com.thefinestartist.finestwebview.helpers.UrlParser;
@@ -143,6 +147,10 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected int stringResCopyLink;
     protected boolean showMenuOpenWith;
     protected int stringResOpenWith;
+    protected boolean showMenuSavePhoto;
+    protected int stringResSavePhoto;
+    protected boolean showToastPhotoSavedTo;
+    protected int stringResPhotoSavedTo;
 
     protected int animationCloseEnter;
     protected int animationCloseExit;
@@ -202,7 +210,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected String encoding;
     protected String data;
     protected String url;
-    protected Map<String,String> extraHeaders;
+    protected Map<String, String> extraHeaders;
     protected CoordinatorLayout coordinatorLayout;
     protected AppBarLayout appBar;
     protected Toolbar toolbar;
@@ -361,6 +369,12 @@ public class FinestWebViewActivity extends AppCompatActivity
         showMenuOpenWith = builder.showMenuOpenWith != null ? builder.showMenuOpenWith : true;
         stringResOpenWith =
                 builder.stringResOpenWith != null ? builder.stringResOpenWith : R.string.open_with;
+        showMenuSavePhoto = builder.showMenuSavePhoto != null ? builder.showMenuSavePhoto : true;
+        stringResSavePhoto =
+                builder.stringResSavePhoto != null ? builder.stringResSavePhoto : R.string.save_photo;
+        showToastPhotoSavedTo = builder.showToastPhotoSavedTo != null ? builder.showToastPhotoSavedTo : true;
+        stringResPhotoSavedTo =
+                builder.stringResPhotoSavedTo != null ? builder.stringResPhotoSavedTo : R.string.photo_saved_to;
 
         animationCloseEnter = builder.animationCloseEnter != null ? builder.animationCloseEnter
                 : R.anim.modal_activity_close_enter;
@@ -620,36 +634,29 @@ public class FinestWebViewActivity extends AppCompatActivity
         { // WebView
             // Initialize the VideoEnabledWebChromeClient and set event handlers
             View nonVideoLayout = webLayout; // Your own view, read class comments
-            ViewGroup videoLayout = (ViewGroup)findViewById(R.id.videoLayout); // Your own view, read class comments
+            ViewGroup videoLayout = (ViewGroup) findViewById(R.id.videoLayout); // Your own view, read class comments
             //noinspection all
             View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
             webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView);
-            webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback()
-            {
+            webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
                 @Override
-                public void toggledFullscreen(boolean fullscreen)
-                {
+                public void toggledFullscreen(boolean fullscreen) {
                     // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-                    if (fullscreen)
-                    {
+                    if (fullscreen) {
                         WindowManager.LayoutParams attrs = getWindow().getAttributes();
                         attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                         attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                         getWindow().setAttributes(attrs);
-                        if (android.os.Build.VERSION.SDK_INT >= 14)
-                        {
+                        if (android.os.Build.VERSION.SDK_INT >= 14) {
                             //noinspection all
                             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         WindowManager.LayoutParams attrs = getWindow().getAttributes();
                         attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
                         attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                         getWindow().setAttributes(attrs);
-                        if (android.os.Build.VERSION.SDK_INT >= 14)
-                        {
+                        if (android.os.Build.VERSION.SDK_INT >= 14) {
                             //noinspection all
                             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                         }
@@ -661,6 +668,55 @@ public class FinestWebViewActivity extends AppCompatActivity
             webView.setWebChromeClient(webChromeClient);
             webView.setWebViewClient(new MyWebViewClient());
             webView.setDownloadListener(downloadListener);
+
+            webView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final WebView.HitTestResult hitTestResult = webView.getHitTestResult();
+                    // 如果是图片类型或者是带有图片链接的类型
+                    if (hitTestResult.getType() == WebView.HitTestResult.IMAGE_TYPE ||
+                            hitTestResult.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                        if (!showMenuSavePhoto) {
+                            return false;
+                        }
+                        // 弹出保存图片的对话框
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FinestWebViewActivity.this);
+                        final String items[] = {getResources().getString(R.string.save_photo)};
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+                                    @Override
+                                    public void onAllGranted(boolean sync) {
+                                        String url = hitTestResult.getExtra();
+                                        // 下载图片到本地
+                                        DownPicUtil.downPic(url, new DownPicUtil.DownFinishListener() {
+
+                                            @Override
+                                            public void getDownPath(String s) {
+                                                if (showToastPhotoSavedTo) {
+                                                    Toast.makeText(FinestWebViewActivity.this, getResources().getString(R.string.photo_saved_to) + s, Toast.LENGTH_LONG).show();
+                                                }
+                                                // 最后通知图库更新
+                                                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + s)));
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
+
+                                    }
+                                }, null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                        return true;
+                    }
+                    return false;
+                }
+            });
 
             WebSettings settings = webView.getSettings();
 
@@ -783,7 +839,7 @@ public class FinestWebViewActivity extends AppCompatActivity
             } else if (url != null) {
                 if (extraHeaders == null) {
                     webView.loadUrl(url);
-                }else {
+                } else {
                     webView.loadUrl(url, extraHeaders);
                 }
             }
@@ -973,7 +1029,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (webChromeClient.onBackPressed()){
+        if (webChromeClient.onBackPressed()) {
             return;
         }
         if (menuLayout.getVisibility() == View.VISIBLE) {
@@ -1183,15 +1239,15 @@ public class FinestWebViewActivity extends AppCompatActivity
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onPermissionRequest(final PermissionRequest request) {
-            for (String res: request.getResources()){
-                if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)){
-                    if (! webViewAudioEnabled){
+            for (String res : request.getResources()) {
+                if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                    if (!webViewAudioEnabled) {
                         request.deny();
                         return;
                     }
                 }
-                if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)){
-                    if (! webViewCameraEnabled){
+                if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                    if (!webViewCameraEnabled) {
                         request.deny();
                         return;
                     }
@@ -1281,9 +1337,9 @@ public class FinestWebViewActivity extends AppCompatActivity
                 startActivity(emailIntent);
 
                 return true;
-            } else if (url.startsWith("http") || url.startsWith("https") || url.startsWith("ftp")){
+            } else if (url.startsWith("http") || url.startsWith("https") || url.startsWith("ftp")) {
                 return super.shouldOverrideUrlLoading(view, url);
-            }else {
+            } else {
                 if (webViewAppJumpEnabled) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -1294,7 +1350,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                         exception.printStackTrace();
                         return true;
                     }
-                }else {
+                } else {
                     return super.shouldOverrideUrlLoading(view, url);
                 }
             }
@@ -1311,19 +1367,19 @@ public class FinestWebViewActivity extends AppCompatActivity
         }
     }
 
-    protected String[] parsePermission(String[] resource){
+    protected String[] parsePermission(String[] resource) {
         List<String> permissions = new ArrayList<>();
-        for (String res: resource){
-            if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)){
+        for (String res : resource) {
+            if (res.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
                 permissions.add(Manifest.permission.RECORD_AUDIO);
             }
-            if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)){
+            if (res.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                 permissions.add(Manifest.permission.CAMERA);
             }
         }
 
         String[] result = new String[permissions.size()];
-        for (int i = 0; i<permissions.size(); i++){
+        for (int i = 0; i < permissions.size(); i++) {
             result[i] = permissions.get(i);
         }
         return result;

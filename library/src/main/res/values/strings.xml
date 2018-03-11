@@ -5,6 +5,8 @@
   <string name="share_via">Share via</string>
   <string name="copy_link">Copy Link</string>
   <string name="open_with">Open with</string>
+  <string name="save_photo">Save Photo</string>
+  <string name="photo_saved_to">Photo has been saved to </string>
   <string name="copied_to_clipboard">Copied to clipboard</string>
   <string name="loading_video">Loading video…</string>
 </resources>

@@ -103,6 +103,10 @@ public class FinestWebView {
         protected Integer stringResCopyLink;
         protected Boolean showMenuOpenWith;
         protected Integer stringResOpenWith;
+        protected Boolean showMenuSavePhoto;
+        protected Integer stringResSavePhoto;
+        protected Boolean showToastPhotoSavedTo;
+        protected Integer stringResPhotoSavedTo;
 
         protected Integer animationOpenEnter = R.anim.modal_activity_open_enter;
         protected Integer animationOpenExit = R.anim.modal_activity_open_exit;
@@ -604,6 +608,26 @@ public class FinestWebView {
 
         public Builder stringResOpenWith(@StringRes int stringResOpenWith) {
             this.stringResOpenWith = stringResOpenWith;
+            return this;
+        }
+
+        public Builder showMenuSavePhoto(boolean showMenuSavePhoto) {
+            this.showMenuSavePhoto = showMenuSavePhoto;
+            return this;
+        }
+
+        public Builder stringResSavePhoto(@StringRes int stringResSavePhoto) {
+            this.stringResSavePhoto = stringResSavePhoto;
+            return this;
+        }
+
+        public Builder showToastPhotoSavedTo(boolean showToastPhotoSavedTo) {
+            this.showToastPhotoSavedTo = showToastPhotoSavedTo;
+            return this;
+        }
+
+        public Builder stringResPhotoSavedTo(@StringRes int stringResPhotoSavedTo) {
+            this.stringResPhotoSavedTo = stringResPhotoSavedTo;
             return this;
         }
 
