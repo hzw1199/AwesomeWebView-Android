@@ -46,7 +46,6 @@ public class FinestWebView {
         protected Integer statusBarColor;
 
         protected Integer toolbarColor;
-        protected Integer toolbarScrollFlags;
 
         protected Integer iconDefaultColor;
         protected Integer iconDisabledColor;
@@ -61,10 +60,6 @@ public class FinestWebView {
         protected Boolean disableIconForward;
         protected Boolean showIconMenu;
         protected Boolean disableIconMenu;
-
-        protected Boolean showSwipeRefreshLayout;
-        protected Integer swipeRefreshColor;
-        protected Integer[] swipeRefreshColors;
 
         protected Boolean showDivider;
         protected Boolean gradientDivider;
@@ -232,11 +227,6 @@ public class FinestWebView {
             return this;
         }
 
-        public Builder toolbarScrollFlags(@ScrollFlags int flags) {
-            this.toolbarScrollFlags = flags;
-            return this;
-        }
-
         public Builder iconDefaultColor(@ColorInt int color) {
             this.iconDefaultColor = color;
             return this;
@@ -310,34 +300,6 @@ public class FinestWebView {
         public Builder disableIconMenu(boolean disableIconMenu) {
             this.disableIconMenu = disableIconMenu;
             return this;
-        }
-
-        public Builder showSwipeRefreshLayout(boolean showSwipeRefreshLayout) {
-            this.showSwipeRefreshLayout = showSwipeRefreshLayout;
-            return this;
-        }
-
-        public Builder swipeRefreshColor(@ColorInt int color) {
-            this.swipeRefreshColor = color;
-            return this;
-        }
-
-        public Builder swipeRefreshColorRes(@ColorRes int colorRes) {
-            this.swipeRefreshColor = Res.getColor(colorRes);
-            return this;
-        }
-
-        public Builder swipeRefreshColors(int[] colors) {
-            Integer[] swipeRefreshColors = new Integer[colors.length];
-            for (int i = 0; i < colors.length; i++)
-                swipeRefreshColors[i] = colors[i];
-            this.swipeRefreshColors = swipeRefreshColors;
-            return this;
-        }
-
-        public Builder swipeRefreshColorsRes(@ArrayRes int colorsRes) {
-            int[] colors = Res.getIntArray(colorsRes);
-            return swipeRefreshColors(colors);
         }
 
         public Builder showDivider(boolean showDivider) {

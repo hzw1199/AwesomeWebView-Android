@@ -20,7 +20,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
@@ -72,7 +71,7 @@ import java.util.Map;
  * Created by Leonardo on 11/14/15.
  */
 public class FinestWebViewActivity extends AppCompatActivity
-        implements AppBarLayout.OnOffsetChangedListener, View.OnClickListener {
+        implements View.OnClickListener {
 
     protected int key;
 
@@ -82,7 +81,6 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected int statusBarColor;
 
     protected int toolbarColor;
-    protected int toolbarScrollFlags;
 
     protected int iconDefaultColor;
     protected int iconDisabledColor;
@@ -97,10 +95,6 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected boolean disableIconForward;
     protected boolean showIconMenu;
     protected boolean disableIconMenu;
-
-    protected boolean showSwipeRefreshLayout;
-    protected int swipeRefreshColor;
-    protected int[] swipeRefreshColors;
 
     protected boolean showDivider;
     protected boolean gradientDivider;
@@ -214,7 +208,6 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected AppCompatImageButton back;
     protected AppCompatImageButton forward;
     protected AppCompatImageButton more;
-    protected SwipeRefreshLayout swipeRefreshLayout;
     protected WebView webView;
     protected View gradient;
     protected View divider;
@@ -280,9 +273,6 @@ public class FinestWebViewActivity extends AppCompatActivity
         statusBarColor = builder.statusBarColor != null ? builder.statusBarColor : colorPrimaryDark;
 
         toolbarColor = builder.toolbarColor != null ? builder.toolbarColor : colorPrimary;
-        toolbarScrollFlags = builder.toolbarScrollFlags != null ? builder.toolbarScrollFlags :
-                AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
-                        | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS;
 
         iconDefaultColor = builder.iconDefaultColor != null ? builder.iconDefaultColor : colorAccent;
         iconDisabledColor = builder.iconDisabledColor != null ? builder.iconDisabledColor
@@ -300,16 +290,6 @@ public class FinestWebViewActivity extends AppCompatActivity
         disableIconForward = builder.disableIconForward != null ? builder.disableIconForward : false;
         showIconMenu = builder.showIconMenu != null ? builder.showIconMenu : true;
         disableIconMenu = builder.disableIconMenu != null ? builder.disableIconMenu : false;
-
-        showSwipeRefreshLayout =
-                builder.showSwipeRefreshLayout != null ? builder.showSwipeRefreshLayout : true;
-        swipeRefreshColor = builder.swipeRefreshColor != null ? builder.swipeRefreshColor : colorAccent;
-        if (builder.swipeRefreshColors != null) {
-            int[] colors = new int[builder.swipeRefreshColors.length];
-            for (int i = 0; i < builder.swipeRefreshColors.length; i++)
-                colors[i] = builder.swipeRefreshColors[i];
-            swipeRefreshColors = colors;
-        }
 
         showDivider = builder.showDivider != null ? builder.showDivider : true;
         gradientDivider = builder.gradientDivider != null ? builder.gradientDivider : true;
@@ -467,8 +447,6 @@ public class FinestWebViewActivity extends AppCompatActivity
         forward.setOnClickListener(this);
         more.setOnClickListener(this);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-
         gradient = findViewById(R.id.gradient);
         divider = findViewById(R.id.divider);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -585,15 +563,8 @@ public class FinestWebViewActivity extends AppCompatActivity
             }
         }
 
-        { // AppBar
-            appBar.addOnOffsetChangedListener(this);
-        }
-
         { // Toolbar
             toolbar.setBackgroundColor(toolbarColor);
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-            params.setScrollFlags(toolbarScrollFlags);
-            toolbar.setLayoutParams(params);
         }
 
         { // TextViews
@@ -656,8 +627,6 @@ public class FinestWebViewActivity extends AppCompatActivity
                 if (webViewBuiltInZoomControls) {
                     // Remove NestedScrollView to enable BuiltInZoomControls
                     ((ViewGroup) webView.getParent()).removeAllViews();
-                    swipeRefreshLayout.addView(webView);
-                    swipeRefreshLayout.removeViewAt(1);
                 }
             }
             if (webViewDisplayZoomControls != null
@@ -770,31 +739,6 @@ public class FinestWebViewActivity extends AppCompatActivity
                     webView.loadUrl(url, extraHeaders);
                 }
             }
-        }
-
-        { // SwipeRefreshLayout
-            swipeRefreshLayout.setEnabled(showSwipeRefreshLayout);
-            if (showSwipeRefreshLayout) {
-                swipeRefreshLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(true);
-                    }
-                });
-            }
-
-            if (swipeRefreshColors == null) {
-                swipeRefreshLayout.setColorSchemeColors(swipeRefreshColor);
-            } else {
-                swipeRefreshLayout.setColorSchemeColors(swipeRefreshColors);
-            }
-
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    webView.reload();
-                }
-            });
         }
 
         { // Divider
@@ -1100,35 +1044,6 @@ public class FinestWebViewActivity extends AppCompatActivity
         overridePendingTransition(animationCloseEnter, animationCloseExit);
     }
 
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        if (toolbarScrollFlags == 0) return;
-
-        ViewHelper.setTranslationY(gradient, verticalOffset);
-        ViewHelper.setAlpha(gradient,
-                1 - (float) Math.abs(verticalOffset) / (float) appBarLayout.getTotalScrollRange());
-
-        switch (progressBarPosition) {
-            case BOTTON_OF_TOOLBAR:
-                ViewHelper.setTranslationY(progressBar,
-                        Math.max(verticalOffset, progressBarHeight - appBarLayout.getTotalScrollRange()));
-                break;
-            case TOP_OF_WEBVIEW:
-                ViewHelper.setTranslationY(progressBar, verticalOffset);
-                break;
-            case TOP_OF_TOOLBAR:
-            case BOTTOM_OF_WEBVIEW:
-            default:
-                break;
-        }
-
-        if (menuLayout.getVisibility() == View.VISIBLE
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            ViewHelper.setTranslationY(menuLayout,
-                    Math.max(verticalOffset, -getResources().getDimension(R.dimen.defaultMenuLayoutMargin)));
-        }
-    }
-
     protected void requestCenterLayout() {
         int maxWidth;
         if (webView.canGoBack() || webView.canGoForward()) {
@@ -1180,26 +1095,6 @@ public class FinestWebViewActivity extends AppCompatActivity
         @Override
         public void onProgressChanged(WebView view, int progress) {
             BroadCastManager.onProgressChanged(FinestWebViewActivity.this, key, progress);
-
-            if (showSwipeRefreshLayout) {
-                if (swipeRefreshLayout.isRefreshing() && progress == 100) {
-                    swipeRefreshLayout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                }
-
-                if (!swipeRefreshLayout.isRefreshing() && progress != 100) {
-                    swipeRefreshLayout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefreshLayout.setRefreshing(true);
-                        }
-                    });
-                }
-            }
 
             if (progress == 100) progress = 0;
             progressBar.setProgress(progress);
