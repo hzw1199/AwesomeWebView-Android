@@ -8,6 +8,9 @@ import android.view.View;
 import com.thefinestartist.finestwebview.FinestWebView;
 import com.wuadam.awesomewebview.sample.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -17,14 +20,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        if (view.getId() == R.id.defaultTheme) {
-            new FinestWebView.Builder(this).titleDefault("The Finest Artist")
-          .show("http://thefinestartist.com");
-            ////                    .toolbarScrollFlags(0)
-            //                    .webViewJavaScriptEnabled(true)
-            //                    .webViewUseWideViewPort(false)
-            ////                    .show("http://andrewliu.in/2016/01/30/聊聊Redis的订阅发布/");
-            //                    .show("http://www.youtube.com");
+        if (view.getId() == R.id.functionPlayground) {
+            new FinestWebView.Builder(this)
+                    .webViewGeolocationEnabled(true)
+                    .webViewCookieEnabled(true)
+                    .webViewAppJumpEnabled(true)
+                    .webViewCameraEnabled(true)
+                    .webViewAudioEnabled(true)
+                    .showMenuSavePhoto(true)
+                    .showToastPhotoSavedTo(true)
+                    .fileChooserEnabled(true)
+                    .injectJavaScript("javascript: alert(\"This is js inject\")")
+                    .show("file:///android_asset/test.html");
+        } else if (view.getId() == R.id.headerDemo) {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Referer", "http://www.google.com");
+
+            new FinestWebView.Builder(this)
+                    .setHeader(headers)
+                    .show("https://www.whatismyreferer.com");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);
             //            startActivity(intent);
@@ -36,9 +50,6 @@ public class MainActivity extends AppCompatActivity {
                     .gradientDivider(false)
                     .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit,
                             R.anim.activity_close_enter, R.anim.activity_close_exit)
-                    .injectJavaScript("javascript: document.getElementById('msg').innerHTML='Hello "
-                            + "TheFinestArtist"
-                            + "!';")
                     .show("http://www.blessthisstuff.com");
         } else if (view.getId() == R.id.blueTheme) {
             new FinestWebView.Builder(this).theme(R.style.FinestWebViewTheme)
