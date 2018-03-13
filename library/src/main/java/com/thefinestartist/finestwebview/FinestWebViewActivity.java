@@ -726,7 +726,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                                     public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
 
                                     }
-                                }, null, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                                }, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                             }
                         });
                         AlertDialog dialog = builder.create();
