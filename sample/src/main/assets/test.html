@@ -36,12 +36,18 @@
 <p><button onclick="window.open('weixin://')">App Jump</button></p>
 <br>
 
-<p>*** js dialogs:</p>
+<p>*** JS Dialogs:</p>
 <p><input type="text" id="input" value="default"/>
 <input type="button" value="Click to show input in alert" onclick="call()"/></p>
 <p><input type="button" value="alert" onclick="onAlert()"/>
 <input type="button" value="confirm" onclick="onConfirm()"/>
 <input type="button" value="prompt" onclick="onPrompt()"/></p>
+<br>
+
+<p>*** Extra Headers:</p>
+<p><script type="text/javascript">
+document.write("Referer: " + document.referrer)
+</script></p>
 <br>
 
 <p>*** Long press to save photo:<img src="https://assets-cdn.github.com/images/modules/logos_page/GitHub-Mark.png" width="100%"></p>

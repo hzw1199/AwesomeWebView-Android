@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         if (view.getId() == R.id.functionPlayground) {
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Referer", "http://github.com/hzw1199");
+
             new FinestWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
                     .webViewCookieEnabled(true)
@@ -30,15 +33,9 @@ public class MainActivity extends AppCompatActivity {
                     .showMenuSavePhoto(true)
                     .showToastPhotoSavedTo(true)
                     .fileChooserEnabled(true)
+                    .setHeader(headers)
                     .injectJavaScript("javascript: alert(\"This is js inject\")")
                     .show("file:///android_asset/test.html");
-        } else if (view.getId() == R.id.headerDemo) {
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Referer", "http://www.google.com");
-
-            new FinestWebView.Builder(this)
-                    .setHeader(headers)
-                    .show("https://www.whatismyreferer.com");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);
             //            startActivity(intent);
