@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
         if (view.getId() == R.id.functionPlayground) {
             Map<String, String> headers = new HashMap<>();
-            headers.put("Referer", "http://github.com/hzw1199");
+            headers.put("Referer", "https://github.com/hzw1199");
 
             new FinestWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
                     .stringResPhotoSavedTo(R.string.photo_saved_to)
                     .fileChooserEnabled(true)
                     .setHeader(headers)
-                    .injectJavaScript("javascript: alert(\"This is js inject\")", true)
+                    .headersMainPage(false)
+                    .injectJavaScript("javascript: alert(\"This is js inject\")")
+                    .injectJavaScriptMainPage(true)
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);

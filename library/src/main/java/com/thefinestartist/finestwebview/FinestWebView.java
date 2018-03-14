@@ -172,6 +172,7 @@ public class FinestWebView {
         protected String data;
         protected String url;
         protected Map<String,String> extraHeaders;
+        protected Boolean extraHeadersMainPage;
 
         public Builder(@NonNull Activity activity) {
             this.context = activity;
@@ -908,6 +909,11 @@ public class FinestWebView {
             return this;
         }
 
+        public Builder headersMainPage(boolean extraHeadersMainPage) {
+            this.extraHeadersMainPage = extraHeadersMainPage;
+            return this;
+        }
+
         /**
          * @deprecated As of release 1.1.1, replaced by {@link #webViewUserAgentString(String)}
          * Use setUserAgentString("Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101
@@ -918,8 +924,12 @@ public class FinestWebView {
                     "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0");
         }
 
-        public Builder injectJavaScript(String injectJavaScript, boolean injectJavaScriptMainPage) {
+        public Builder injectJavaScript(String injectJavaScript) {
             this.injectJavaScript = injectJavaScript;
+            return this;
+        }
+
+        public Builder injectJavaScriptMainPage(boolean injectJavaScriptMainPage) {
             this.injectJavaScriptMainPage = injectJavaScriptMainPage;
             return this;
         }

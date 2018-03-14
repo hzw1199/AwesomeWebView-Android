@@ -228,6 +228,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     protected String data;
     protected String url;
     protected Map<String, String> extraHeaders;
+    protected Boolean extraHeadersMainPage;
     protected CoordinatorLayout coordinatorLayout;
     protected AppBarLayout appBar;
     protected Toolbar toolbar;
@@ -462,6 +463,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         injectJavaScript = builder.injectJavaScript;
         injectJavaScriptMainPage = builder.injectJavaScriptMainPage != null ? builder.injectJavaScriptMainPage : true;
+        extraHeadersMainPage = builder.extraHeadersMainPage != null ? builder.extraHeadersMainPage : true;
 
         mimeType = builder.mimeType;
         encoding = builder.encoding;
@@ -1487,7 +1489,12 @@ public class FinestWebViewActivity extends AppCompatActivity
 
                 return true;
             } else if (url.startsWith("http") || url.startsWith("https") || url.startsWith("ftp")) {
-                return super.shouldOverrideUrlLoading(view, url);
+                if (extraHeaders == null || extraHeadersMainPage && !url.equals(FinestWebViewActivity.this.url)) {
+                    return super.shouldOverrideUrlLoading(view, url);
+                } else {
+                    view.loadUrl(url, extraHeaders);
+                    return true;
+                }
             } else {
                 if (webViewAppJumpEnabled) {
                     try {
