@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.listeners;
+package com.wuadam.awesomewebview.listeners;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

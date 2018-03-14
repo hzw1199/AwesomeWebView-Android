@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.helpers;
+package com.wuadam.awesomewebview.helpers;
 
 import java.net.MalformedURLException;
 import java.net.URL;

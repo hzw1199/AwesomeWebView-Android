@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview;
+package com.wuadam.awesomewebview;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -55,22 +55,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thefinestartist.converters.UnitConverter;
-import com.thefinestartist.finestwebview.enums.Position;
-import com.thefinestartist.finestwebview.helpers.BitmapHelper;
-import com.thefinestartist.finestwebview.helpers.ColorHelper;
-import com.thefinestartist.finestwebview.helpers.DownPicUtil;
-import com.thefinestartist.finestwebview.helpers.PermissionHelper;
-import com.thefinestartist.finestwebview.helpers.TypefaceHelper;
-import com.thefinestartist.finestwebview.helpers.UrlParser;
-import com.thefinestartist.finestwebview.listeners.BroadCastManager;
-import com.thefinestartist.finestwebview.views.ShadowLayout;
-import com.thefinestartist.finestwebview.views.VideoEnabledWebChromeClient;
-import com.thefinestartist.finestwebview.views.VideoEnabledWebView;
+import com.wuadam.awesomewebview.enums.Position;
+import com.wuadam.awesomewebview.helpers.BitmapHelper;
+import com.wuadam.awesomewebview.helpers.ColorHelper;
+import com.wuadam.awesomewebview.helpers.DownPicUtil;
+import com.wuadam.awesomewebview.helpers.PermissionHelper;
+import com.wuadam.awesomewebview.helpers.TypefaceHelper;
+import com.wuadam.awesomewebview.helpers.UrlParser;
+import com.wuadam.awesomewebview.listeners.BroadCastManager;
+import com.wuadam.awesomewebview.views.ShadowLayout;
+import com.wuadam.awesomewebview.views.VideoEnabledWebChromeClient;
+import com.wuadam.awesomewebview.views.VideoEnabledWebView;
 import com.thefinestartist.utils.etc.APILevel;
 import com.thefinestartist.utils.service.ClipboardManagerUtil;
 import com.thefinestartist.utils.ui.DisplayUtil;
 import com.thefinestartist.utils.ui.ViewUtil;
-import com.wuadam.awesomewebview.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +84,7 @@ import java.util.Map;
 /**
  * Created by Leonardo on 11/14/15.
  */
-public class FinestWebViewActivity extends AppCompatActivity
+public class AwesomeWebViewActivity extends AppCompatActivity
         implements View.OnClickListener {
 
     protected int key;
@@ -262,7 +261,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         @Override
         public void onDownloadStart(String url, String userAgent, String contentDisposition,
                                     String mimetype, long contentLength) {
-            BroadCastManager.onDownloadStart(FinestWebViewActivity.this, key, url, userAgent,
+            BroadCastManager.onDownloadStart(AwesomeWebViewActivity.this, key, url, userAgent,
                     contentDisposition, mimetype, contentLength);
         }
     };
@@ -271,7 +270,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         Intent intent = getIntent();
         if (intent == null) return;
 
-        FinestWebView.Builder builder = (FinestWebView.Builder) intent.getSerializableExtra("builder");
+        AwesomeWebView.Builder builder = (AwesomeWebView.Builder) intent.getSerializableExtra("builder");
 
         // set theme before resolving attributes depending on those
         setTheme(builder.theme != null ? builder.theme : 0);
@@ -703,12 +702,12 @@ public class FinestWebViewActivity extends AppCompatActivity
                             return false;
                         }
                         // 弹出保存图片的对话框
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FinestWebViewActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(AwesomeWebViewActivity.this);
                         final String items[] = {getResources().getString(stringResSavePhoto)};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+                                PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
                                     @Override
                                     public void onAllGranted(boolean sync) {
                                         String url = hitTestResult.getExtra();
@@ -718,7 +717,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                                             @Override
                                             public void getDownPath(String s) {
                                                 if (showToastPhotoSavedTo) {
-                                                    Toast.makeText(FinestWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + s, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(AwesomeWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + s, Toast.LENGTH_LONG).show();
                                                 }
                                                 // 最后通知图库更新
                                                 getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + s)));
@@ -1044,7 +1043,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         initializeOptions();
 
-        setContentView(R.layout.finest_web_view);
+        setContentView(R.layout.awesome_web_view);
         bindViews();
         layoutViews();
         initializeViews();
@@ -1202,7 +1201,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BroadCastManager.unregister(FinestWebViewActivity.this, key);
+        BroadCastManager.unregister(AwesomeWebViewActivity.this, key);
         if (webView == null) return;
         if (APILevel.require(11)) webView.onPause();
         destroyWebView();
@@ -1228,7 +1227,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         @Override
         public void onProgressChanged(WebView view, int progress) {
-            BroadCastManager.onProgressChanged(FinestWebViewActivity.this, key, progress);
+            BroadCastManager.onProgressChanged(AwesomeWebViewActivity.this, key, progress);
 
             if (progress == 100) progress = 0;
             progressBar.setProgress(progress);
@@ -1236,17 +1235,17 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         @Override
         public void onReceivedTitle(WebView view, String title) {
-            BroadCastManager.onReceivedTitle(FinestWebViewActivity.this, key, title);
+            BroadCastManager.onReceivedTitle(AwesomeWebViewActivity.this, key, title);
         }
 
         @Override
         public void onReceivedTouchIconUrl(WebView view, String url, boolean precomposed) {
-            BroadCastManager.onReceivedTouchIconUrl(FinestWebViewActivity.this, key, url, precomposed);
+            BroadCastManager.onReceivedTouchIconUrl(AwesomeWebViewActivity.this, key, url, precomposed);
         }
 
         @Override
         public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-            PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+            PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
                 @Override
                 public void onAllGranted(boolean sync) {
                     callback.invoke(origin, true, true);
@@ -1277,7 +1276,7 @@ public class FinestWebViewActivity extends AppCompatActivity
                 }
             }
 
-            PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+            PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
                 @Override
                 public void onAllGranted(boolean sync) {
                     request.grant(request.getResources());
@@ -1323,7 +1322,7 @@ public class FinestWebViewActivity extends AppCompatActivity
             }
             Intent[] intentArray;
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(FinestWebViewActivity.this.getPackageManager()) != null) {
+            if (takePictureIntent.resolveActivity(AwesomeWebViewActivity.this.getPackageManager()) != null) {
                 File photoFile = null;
                 try {
                     photoFile = createImage();
@@ -1401,7 +1400,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     private void getFile() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
-        PermissionHelper.CheckPermissions(FinestWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+        PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
             @Override
             public void onAllGranted(boolean sync) {
 
@@ -1418,7 +1417,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            BroadCastManager.onPageStarted(FinestWebViewActivity.this, key, url);
+            BroadCastManager.onPageStarted(AwesomeWebViewActivity.this, key, url);
             if (!url.contains("docs.google.com") && url.endsWith(".pdf")) {
                 webView.loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
             }
@@ -1426,7 +1425,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            BroadCastManager.onPageFinished(FinestWebViewActivity.this, key, url);
+            BroadCastManager.onPageFinished(AwesomeWebViewActivity.this, key, url);
 
             if (updateTitleFromHtml) title.setText(view.getTitle());
             urlTv.setText(UrlParser.getHost(url));
@@ -1443,7 +1442,7 @@ public class FinestWebViewActivity extends AppCompatActivity
             }
 
             if (injectJavaScript != null) {
-                if (injectJavaScriptMainPage && !url.equals(FinestWebViewActivity.this.url)) {
+                if (injectJavaScriptMainPage && !url.equals(AwesomeWebViewActivity.this.url)) {
                     return;
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -1489,7 +1488,7 @@ public class FinestWebViewActivity extends AppCompatActivity
 
                 return true;
             } else if (url.startsWith("http") || url.startsWith("https") || url.startsWith("ftp")) {
-                if (extraHeaders == null || extraHeadersMainPage && !url.equals(FinestWebViewActivity.this.url)) {
+                if (extraHeaders == null || extraHeadersMainPage && !url.equals(AwesomeWebViewActivity.this.url)) {
                     return super.shouldOverrideUrlLoading(view, url);
                 } else {
                     view.loadUrl(url, extraHeaders);
@@ -1514,12 +1513,12 @@ public class FinestWebViewActivity extends AppCompatActivity
 
         @Override
         public void onLoadResource(WebView view, String url) {
-            BroadCastManager.onLoadResource(FinestWebViewActivity.this, key, url);
+            BroadCastManager.onLoadResource(AwesomeWebViewActivity.this, key, url);
         }
 
         @Override
         public void onPageCommitVisible(WebView view, String url) {
-            BroadCastManager.onPageCommitVisible(FinestWebViewActivity.this, key, url);
+            BroadCastManager.onPageCommitVisible(AwesomeWebViewActivity.this, key, url);
         }
     }
 

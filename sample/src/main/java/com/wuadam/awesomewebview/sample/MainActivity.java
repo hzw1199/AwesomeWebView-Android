@@ -1,12 +1,11 @@
-package com.thefinestartist.finestwebview.sample;
+package com.wuadam.awesomewebview.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.wuadam.awesomewebview.sample.R;
+import com.wuadam.awesomewebview.AwesomeWebView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             Map<String, String> headers = new HashMap<>();
             headers.put("Referer", "https://github.com/hzw1199");
 
-            new FinestWebView.Builder(this)
+            new AwesomeWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
                     .webViewCookieEnabled(true)
                     .webViewAppJumpEnabled(true)
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);
             //            startActivity(intent);
-            new FinestWebView.Builder(this).theme(R.style.RedTheme)
+            new AwesomeWebView.Builder(this).theme(R.style.RedTheme)
                     .titleDefault("Bless This Stuff")
                     .webViewBuiltInZoomControls(true)
                     .webViewDisplayZoomControls(true)
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.activity_close_enter, R.anim.activity_close_exit)
                     .show("http://www.blessthisstuff.com");
         } else if (view.getId() == R.id.blueTheme) {
-            new FinestWebView.Builder(this).theme(R.style.FinestWebViewTheme)
+            new AwesomeWebView.Builder(this).theme(R.style.FinestWebViewTheme)
                     .titleDefault("Vimeo")
                     .showUrl(false)
                     .statusBarColorRes(R.color.bluePrimaryDark)
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     .setCustomAnimations(R.anim.slide_up, R.anim.hold, R.anim.hold, R.anim.slide_down)
                     .show("http://example.com");
         } else if (view.getId() == R.id.blackTheme) {
-            new FinestWebView.Builder(this).theme(R.style.FinestWebViewTheme)
+            new AwesomeWebView.Builder(this).theme(R.style.FinestWebViewTheme)
                     .titleDefault("Dribbble")
                     .statusBarColorRes(R.color.blackPrimaryDark)
                     .toolbarColorRes(R.color.blackPrimary)

@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.helpers;
+package com.wuadam.awesomewebview.helpers;
 
 /**
  * Created by wuzongheng on 2018/2/18.

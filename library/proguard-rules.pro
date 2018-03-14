@@ -25,6 +25,6 @@
 }
 
 # VideoEnabledWebView
--keepclassmembers class com.thefinestartist.finestwebview.views.VideoEnabledWebView$JavascriptInterface {
+-keepclassmembers class com.wuadam.awesomewebview.views.VideoEnabledWebView$JavascriptInterface {
    public *;
 }

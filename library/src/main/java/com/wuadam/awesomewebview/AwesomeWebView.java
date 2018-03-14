@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview;
+package com.wuadam.awesomewebview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,12 +14,11 @@ import android.support.annotation.StyleRes;
 import android.webkit.WebSettings;
 
 import com.thefinestartist.Base;
-import com.thefinestartist.finestwebview.enums.Position;
-import com.thefinestartist.finestwebview.listeners.BroadCastManager;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
+import com.wuadam.awesomewebview.enums.Position;
+import com.wuadam.awesomewebview.listeners.BroadCastManager;
+import com.wuadam.awesomewebview.listeners.WebViewListener;
 import com.thefinestartist.utils.content.Ctx;
 import com.thefinestartist.utils.content.Res;
-import com.wuadam.awesomewebview.R;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ import java.util.Map;
 /**
  * Created by Leonardo on 11/21/15.
  */
-public class FinestWebView {
+public class AwesomeWebView {
 
     public static class Builder implements Serializable {
 
@@ -180,7 +179,7 @@ public class FinestWebView {
         }
 
         /**
-         * If you use context instead of activity, FinestWebView won't be able to override activity
+         * If you use context instead of activity, AwesomeWebView won't be able to override activity
          * animation.
          * Try to create builder with Activity if it's possible.
          */
@@ -963,7 +962,7 @@ public class FinestWebView {
 
             if (!listeners.isEmpty()) new BroadCastManager(context, key, listeners);
 
-            Intent intent = new Intent(context, FinestWebViewActivity.class);
+            Intent intent = new Intent(context, AwesomeWebViewActivity.class);
             intent.putExtra("builder", this);
 
             Ctx.startActivity(intent);

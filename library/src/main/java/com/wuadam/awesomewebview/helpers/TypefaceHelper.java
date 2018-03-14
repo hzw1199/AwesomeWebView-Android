@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.helpers;
+package com.wuadam.awesomewebview.helpers;
 
 import android.content.Context;
 import android.graphics.Typeface;

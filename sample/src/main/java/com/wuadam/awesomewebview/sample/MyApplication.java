@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.sample;
+package com.wuadam.awesomewebview.sample;
 
 import android.app.Application;
 import android.webkit.CookieManager;

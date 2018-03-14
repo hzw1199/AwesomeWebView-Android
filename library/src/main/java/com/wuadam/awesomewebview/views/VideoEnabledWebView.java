@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.views;
+package com.wuadam.awesomewebview.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

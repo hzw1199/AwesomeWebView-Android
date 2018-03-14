@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.helpers;
+package com.wuadam.awesomewebview.helpers;
 
 import android.graphics.Color;
 

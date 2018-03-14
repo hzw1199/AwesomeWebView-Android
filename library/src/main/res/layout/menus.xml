@@ -10,7 +10,7 @@
     android:orientation="vertical"
     android:visibility="gone">
 
-    <com.thefinestartist.finestwebview.views.ShadowLayout
+    <com.wuadam.awesomewebview.views.ShadowLayout
         android:id="@+id/shadowLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -141,5 +141,5 @@
             </LinearLayout>
 
         </LinearLayout>
-    </com.thefinestartist.finestwebview.views.ShadowLayout>
+    </com.wuadam.awesomewebview.views.ShadowLayout>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.thefinestartist.finestwebview.enums;
+package com.wuadam.awesomewebview.enums;
 
 /**
  * Created by Leonardo on 11/14/15.
