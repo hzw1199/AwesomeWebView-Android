@@ -165,6 +165,7 @@ public class FinestWebView {
         protected Boolean webViewAudioEnabled;
 
         protected String injectJavaScript;
+        protected Boolean injectJavaScriptMainPage;
 
         protected String mimeType;
         protected String encoding;
@@ -917,8 +918,9 @@ public class FinestWebView {
                     "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.4) Gecko/20100101 Firefox/4.0");
         }
 
-        public Builder injectJavaScript(String injectJavaScript) {
+        public Builder injectJavaScript(String injectJavaScript, boolean injectJavaScriptMainPage) {
             this.injectJavaScript = injectJavaScript;
+            this.injectJavaScriptMainPage = injectJavaScriptMainPage;
             return this;
         }
 

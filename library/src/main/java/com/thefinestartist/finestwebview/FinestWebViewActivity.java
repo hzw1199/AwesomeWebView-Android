@@ -221,6 +221,7 @@ public class FinestWebViewActivity extends AppCompatActivity
     private String FILE_TYPE = "*/*";
 
     protected String injectJavaScript;
+    protected Boolean injectJavaScriptMainPage;
 
     protected String mimeType;
     protected String encoding;
@@ -460,6 +461,7 @@ public class FinestWebViewActivity extends AppCompatActivity
         webViewAudioEnabled = builder.webViewAudioEnabled != null ? builder.webViewAudioEnabled : true;
 
         injectJavaScript = builder.injectJavaScript;
+        injectJavaScriptMainPage = builder.injectJavaScriptMainPage != null ? builder.injectJavaScriptMainPage : true;
 
         mimeType = builder.mimeType;
         encoding = builder.encoding;
@@ -1439,8 +1441,13 @@ public class FinestWebViewActivity extends AppCompatActivity
             }
 
             if (injectJavaScript != null) {
+                if (injectJavaScriptMainPage && !url.equals(FinestWebViewActivity.this.url)) {
+                    return;
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     webView.evaluateJavascript(injectJavaScript, null);
+                } else {
+                    webView.loadUrl(injectJavaScript);
                 }
             }
         }

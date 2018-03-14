@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                     .stringResPhotoSavedTo(R.string.photo_saved_to)
                     .fileChooserEnabled(true)
                     .setHeader(headers)
-                    .injectJavaScript("javascript: alert(\"This is js inject\")")
+                    .injectJavaScript("javascript: alert(\"This is js inject\")", true)
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);
