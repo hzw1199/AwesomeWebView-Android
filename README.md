@@ -1,8 +1,223 @@
-# FinestWebView
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FinestWebView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/2861)
+# AwesomeWebView
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
-[![API](https://img.shields.io/badge/API-7%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=7)
+[![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
+
+#### This project is based on [FinestWebView](https://github.com/TheFinestArtist/FinestWebView-Android), some useful new features are added.
+
+
+## New Features
+
+#### App Jump
+
+You can response to custom schemes by jumping to corresponding Apps.
+
+```java
+webViewAppJumpEnabled(boolean webViewAppJumpEnabled);
+```
+
+#### Camera
+
+You can make camera work in html5.
+
+```java
+webViewCameraEnabled(boolean webViewCameraEnabled);    // Dynamic permission handled
+```
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+#### Audio Record
+
+You can make audio input work in html5.
+
+```java
+webViewAudioEnabled(boolean webViewAudioEnabled);    // Dynamic permission handled
+```
+```xml
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+```
+
+#### Save Photo after Long Press
+
+You can save pictures after long press on the picture.
+
+```java
+showMenuSavePhoto(boolean showMenuSavePhoto);    // Dynamic permission handled
+stringResSavePhoto(String stringResSavePhoto);
+showToastPhotoSavedTo(boolean showToastPhotoSavedTo);
+stringResPhotoSavedTo(String stringResPhotoSavedTo);
+```
+```xml
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+```
+
+#### File Chooser
+
+You can upload files.
+
+```java
+fileChooserEnabled(boolean fileChooserEnabled);    // Dynamic permission handled
+```
+```xml
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+```
+
+#### Extra Headers
+
+You can define your own Headers of http request, such as defining a fake Referer.
+
+```java
+setHeader(Map<String,String> extraHeaders);
+headersMainPage(boolean headersMainPage);
+```
+
+#### Javascript Inject
+
+You can inject javascript and choose whether to inject in every page or only inject in main page.
+
+```java
+injectJavaScript(String injectJavaScript);    // Already in FinestWebView
+injectJavaScriptMainPage(boolean injectJavaScriptMainPage);
+```
+
+#### Geo Location
+
+You can acquire location while acquiring locating permission in runtime.
+
+```java
+webViewGeolocationEnabled(boolean webViewGeolocationEnabled);    // Added dynamic permission
+```
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```
+
+#### Video Full Screen
+Video Full Screen is handled, all you need to do is adding following code to ```AwesomeWebViewActivity``` in ```Manifest.xml```  
+
+```xml
+android:configChanges="keyboardHidden|orientation|screenSize"
+android:hardwareAccelerated="true"
+```
+
+#### Cookie
+```java
+webViewCookieEnabled(boolean webViewCookieEnabled);    // Already in FinestWebView
+```
+Add following code in your Application Class:  
+
+```java
+CookieManager.getInstance().setAcceptCookie(true);  
+```
+
+#### Dynamic permission Acquire
+Camera, Audio, Write file, Location permissions are handled in runtime.
+
+#### AppBar Scroll and SwipeRefreshLayout Disabled
+`toolbarScrollFlags(int flags)` , `showSwipeRefreshLayout(boolean showSwipeRefreshLayout)` , `swipeRefreshColor(int color)` , `swipeRefreshColorRes(int colorRes)` , `swipeRefreshColors(int[] colors)` and `swipeRefreshColorsRes(int colorsRes)` are disabled because some websites appears to be abnormal with AppBar Scroll and SwipeRefreshLayout features (eg. http://m.baidu.com: You could not load more news when you scroll to end of the page. When you click into news detail page, you could not scroll to end of the page.)
+
+
+## Proguard
+No need to add more proguard rules, `consumerProguardFiles` has already handled library proguard rules.
+
+
+## Screenshots
+
+
+### Playground
+![](/art/awesome/playground.jpeg)
+
+### Camera
+![](/art/awesome/camera.jpeg)
+
+### Audio Record
+![](/art/awesome/audio_record.jpeg)
+
+### Referrer
+![](/art/awesome/referrer.jpeg)
+
+### File Chooser
+![](/art/awesome/file_chooser.jpeg)
+
+### Video Full Screen
+![](/art/awesome/video_full_screen.jpeg)
+
+
+## Getting started
+
+#### Gradle Dependency (jitpack)
+
+Add it in your build.gradle at the end of repositories:  
+
+```
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+
+Easily reference the library in your Android projects using this dependency in your module's `build.gradle` file.
+
+```java
+dependencies {
+    compile 'com.github.hzw1199:awesomewebview:1.0'
+}
+```
+
+#### Manifest Settings
+
+FinestWebView is basically and Android activity with webview, toolbar and etc.  
+You have to add FinestWebViewActivity in your `AndroidManifest.xml`
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+
+<activity
+    android:name="com.wuadam.awesomewebview.AwesomeWebViewActivity"
+    android:configChanges="keyboardHidden|orientation|screenSize"
+    android:hardwareAccelerated="true"
+    android:theme="@style/FinestWebViewTheme.Light" />
+```
+
+#### Basic WebView
+
+```java
+new AwesomeWebView.Builder(activity).show(url);
+```
+
+
+## License
+
+```
+The MIT License (MIT)
+
+Copyright (c) 2013 TheFinestArtist
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```
+
+
+## Introduction of Original [FinestWebView](https://github.com/TheFinestArtist/FinestWebView-Android)
 
 #### Beautiful and customizable Android Activity that shows web pages within an app.
 
@@ -25,57 +240,6 @@
 
 ### Back and forward & More options
 <img src="https://github.com/TheFinestArtist/FinestWebView-Android/blob/master/art/second.png?raw=true" width="888">
-
-## FinestWebView Demo Video - YouTube
-<a href="https://www.youtube.com/watch?v=7qmAqnspjAM" target="_blank">
-  <img alt="Youtube"
-       src="https://github.com/TheFinestArtist/FinestWebView-Android/blob/master/art/youtube.png">
-</a>
-
-
-## Sample Project
-
-You can download the latest sample APK from this repo here: [sample-release.apk](https://github.com/TheFinestArtist/FinestWebView-Android/blob/master/sample/sample-release.apk?raw=true)
-
-It's also on Google Play:
-
-<a href="https://play.google.com/store/apps/details?id=com.thefinestartist.finestwebview.sample" target="_blank">
-  <img alt="Get it on Google Play"
-      src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60"/>
-</a>
-
-## Getting started
-
-#### Gradle Dependency (jcenter)
-
-Easily reference the library in your Android projects using this dependency in your module's `build.gradle` file.
-
-```java
-dependencies {
-    compile 'com.thefinestartist:finestwebview:1.2.7'
-}
-```
-
-#### Manifest Settings
-
-FinestWebView is basically and Android activity with webview, toolbar and etc.  
-You have to add FinestWebViewActivity in your `AndroidManifest.xml`
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-
-<activity
-    android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
-    android:configChanges="keyboardHidden|orientation|screenSize"
-    android:screenOrientation="sensor"
-    android:theme="@style/FinestWebViewTheme.Light" />
-```
-
-#### Basic WebView
-
-```java
-new FinestWebView.Builder(activity).show(url);
-```
 
 
 ## Customization
@@ -493,29 +657,3 @@ You can force WebView to show in desktop mode by setting `webViewUserAgentString
 * User Interface Design
 * Graphic Design
 
-
-## License
-
-```
-The MIT License (MIT)
-
-Copyright (c) 2013 TheFinestArtist
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-```
