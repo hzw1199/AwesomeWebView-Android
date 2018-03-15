@@ -5,6 +5,7 @@
 
 #### This project is based on [FinestWebView](https://github.com/TheFinestArtist/FinestWebView-Android), some useful new features are added.
 
+![](/art/awesome/playground.jpeg)
 
 ## New Features
 
@@ -126,9 +127,6 @@ No need to add more proguard rules, `consumerProguardFiles` has already handled 
 ## Screenshots
 
 
-### Playground
-![](/art/awesome/playground.jpeg)
-
 ### Camera
 ![](/art/awesome/camera.jpeg)
 
@@ -164,7 +162,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```java
 dependencies {
-    compile 'com.github.hzw1199:awesomewebview:1.0'
+    compile 'com.github.hzw1199:AwesomeWebView-Android:1.0'
 }
 ```
 
