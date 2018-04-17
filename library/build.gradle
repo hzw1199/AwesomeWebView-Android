@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.hzw1199'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
 
     defaultConfig {
         minSdkVersion 14
@@ -21,9 +21,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:support-annotations:27.1.0"
-    implementation "com.android.support:appcompat-v7:26.1.0"
-    implementation "com.android.support:design:26.1.0"
+    implementation "com.android.support:support-annotations:27.1.1"
+    implementation "com.android.support:appcompat-v7:27.1.1"
+    implementation "com.android.support:design:27.1.1"
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation('com.thefinestartist:utils:0.9.0') {
         exclude group: 'com.android.support'
