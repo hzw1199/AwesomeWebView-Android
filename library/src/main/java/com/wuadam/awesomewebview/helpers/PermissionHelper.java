@@ -2,11 +2,10 @@ package com.wuadam.awesomewebview.helpers;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
+import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,6 @@ import java.util.List;
  */
 
 public class PermissionHelper {
-    private static final int REQUEST_CODE_PERMISSION = 300;
-    public static final int REQUEST_CODE_PERMISSION_SETTINGS = 400;
 
     public static boolean hasPermissions(Context context, String... permissionName) {
         for (String permission : permissionName) {
@@ -53,36 +50,26 @@ public class PermissionHelper {
             if (checkPermissionListener != null) {
                 checkPermissionListener.onAllGranted(true);
             }
-        } else {
-            PermissionListener listener = new PermissionListener() {
-                @Override
-                public void onSucceed(int requestCode, @NonNull List<String> grantedPermissions) {
-                    // 权限申请成功回调。
-
-                    // 这里的requestCode就是申请时设置的requestCode。
-                    // 和onActivityResult()的requestCode一样，用来区分多个不同的请求。
-                    if (requestCode == REQUEST_CODE_PERMISSION) {
-                        if (checkPermissionListener != null) {
-                            checkPermissionListener.onAllGranted(false);
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailed(int requestCode, @NonNull List<String> deniedPermissions) {
-                    // 权限申请失败回调。
-                    if (requestCode == REQUEST_CODE_PERMISSION) {
-                        if (checkPermissionListener != null) {
-                            checkPermissionListener.onPartlyGranted(deniedPermissions, false);
-                        }
-                    }
-                }
-            };
-
+        }else {
             AndPermission.with(context)
-                    .requestCode(REQUEST_CODE_PERMISSION)
                     .permission(permissionName)
-                    .callback(listener)
+                    .onGranted(new Action() {
+                        @Override
+                        public void onAction(List<String> permissions) {
+                            // 权限申请成功回调。
+                            if (checkPermissionListener != null) {
+                                checkPermissionListener.onAllGranted(false);
+                            }
+                        }
+                    })
+                    .onDenied(new Action() {
+                        @Override
+                        public void onAction(List<String> permissions) {
+                            if (checkPermissionListener != null) {
+                                checkPermissionListener.onPartlyGranted(permissions, false);
+                            }
+                        }
+                    })
                     .start();
         }
     }
