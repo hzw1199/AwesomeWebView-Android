@@ -163,7 +163,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```java
 dependencies {
-    compile 'com.github.hzw1199:AwesomeWebView-Android:1.0'
+    implementation 'com.github.hzw1199:AwesomeWebView-Android:1.1'
 }
 ```
 
