@@ -117,6 +117,12 @@ CookieManager.getInstance().setAcceptCookie(true);
 #### Dynamic permission Acquire
 Camera, Audio, Write file, Location permissions are handled in runtime.
 
+#### ToolBar Visible
+```java
+toolbarVisible(boolean toolbarVisible); 
+```
+
+
 #### AppBar Scroll and SwipeRefreshLayout Disabled
 `toolbarScrollFlags(int flags)` , `showSwipeRefreshLayout(boolean showSwipeRefreshLayout)` , `swipeRefreshColor(int color)` , `swipeRefreshColorRes(int colorRes)` , `swipeRefreshColors(int[] colors)` and `swipeRefreshColorsRes(int colorsRes)` are disabled because some websites appears to be abnormal with AppBar Scroll and SwipeRefreshLayout features (eg. http://m.baidu.com: You could not load more news when you scroll to end of the page. When you click into news detail page, you could not scroll to end of the page.)
 
@@ -163,7 +169,7 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```java
 dependencies {
-    implementation 'com.github.hzw1199:AwesomeWebView-Android:1.1'
+    implementation 'com.github.hzw1199:AwesomeWebView-Android:1.2'
 }
 ```
 

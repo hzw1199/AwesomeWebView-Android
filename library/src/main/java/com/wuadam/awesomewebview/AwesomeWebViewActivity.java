@@ -95,6 +95,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected int statusBarColor;
 
     protected int toolbarColor;
+    protected boolean toolbarVisible;
 
     protected int iconDefaultColor;
     protected int iconDisabledColor;
@@ -304,6 +305,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         statusBarColor = builder.statusBarColor != null ? builder.statusBarColor : colorPrimaryDark;
 
         toolbarColor = builder.toolbarColor != null ? builder.toolbarColor : colorPrimary;
+        toolbarVisible = builder.toolbarVisible != null ? builder.toolbarVisible : true;
 
         iconDefaultColor = builder.iconDefaultColor != null ? builder.iconDefaultColor : colorAccent;
         iconDisabledColor = builder.iconDisabledColor != null ? builder.iconDisabledColor
@@ -516,10 +518,13 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     }
 
     protected void layoutViews() {
-        setSupportActionBar(toolbar);
+        if (!toolbarVisible) {
+            setSupportActionBar(toolbar);
+            toolbar.setVisibility(View.GONE);
+        }
 
         { // AppBar
-            float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
+            float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
             if (!gradientDivider) toolbarHeight += dividerHeight;
             CoordinatorLayout.LayoutParams params =
                     new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -529,7 +534,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
 
         { // Toolbar
-            float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
+            float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) toolbarHeight);
             toolbarLayout.setMinimumHeight((int) toolbarHeight);
@@ -553,7 +558,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
         { // Divider
             if (gradientDivider) {
-                float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
+                float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
                 CoordinatorLayout.LayoutParams params =
                         (CoordinatorLayout.LayoutParams) gradient.getLayoutParams();
                 params.setMargins(0, (int) toolbarHeight, 0, 0);
@@ -566,7 +571,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             CoordinatorLayout.LayoutParams params =
                     new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             (int) progressBarHeight);
-            float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
+            float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
             switch (progressBarPosition) {
                 case TOP_OF_TOOLBAR:
                     params.setMargins(0, 0, 0, 0);
@@ -585,18 +590,27 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
 
         { // WebLayout
-            float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
-            int statusBarHeight = DisplayUtil.getStatusBarHeight();
+            float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
+            int statusBarHeight = toolbarVisible? DisplayUtil.getStatusBarHeight(): 0;
             int screenHeight = DisplayUtil.getHeight();
             float webLayoutMinimumHeight = screenHeight - toolbarHeight - statusBarHeight;
             if (showDivider && !gradientDivider) webLayoutMinimumHeight -= dividerHeight;
             webLayout.setMinimumHeight((int) webLayoutMinimumHeight);
+
+            CoordinatorLayout.LayoutParams params =
+                    new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+            params.setMargins(0, (int) toolbarHeight, 0, 0);
+            webLayout.setLayoutParams(params);
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     protected void initializeViews() {
-        setSupportActionBar(toolbar);
+        if (! toolbarVisible) {
+            setSupportActionBar(toolbar);
+            toolbar.setVisibility(View.GONE);
+        }
 
         { // StatusBar
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -897,7 +911,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             CoordinatorLayout.LayoutParams params =
                     new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             (int) progressBarHeight);
-            float toolbarHeight = getResources().getDimension(R.dimen.toolbarHeight);
+            float toolbarHeight = toolbarVisible? getResources().getDimension(R.dimen.toolbarHeight): 0;
             switch (progressBarPosition) {
                 case TOP_OF_TOOLBAR:
                     params.setMargins(0, 0, 0, 0);

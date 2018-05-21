@@ -43,6 +43,7 @@ public class AwesomeWebView {
         protected Integer statusBarColor;
 
         protected Integer toolbarColor;
+        protected Boolean toolbarVisible;
 
         protected Integer iconDefaultColor;
         protected Integer iconDisabledColor;
@@ -226,6 +227,11 @@ public class AwesomeWebView {
 
         public Builder toolbarColor(@ColorInt int color) {
             this.toolbarColor = color;
+            return this;
+        }
+
+        public Builder toolbarVisible(boolean toolbarVisible) {
+            this.toolbarVisible = toolbarVisible;
             return this;
         }
 
