@@ -3,11 +3,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.hzw1199'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
@@ -21,9 +21,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:support-annotations:27.1.1"
-    implementation "com.android.support:appcompat-v7:27.1.1"
-    implementation "com.android.support:design:27.1.1"
+    implementation "com.android.support:support-annotations:28.0.0"
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation "com.android.support:design:28.0.0"
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation('com.thefinestartist:utils:0.9.0') {
         exclude group: 'com.android.support'
