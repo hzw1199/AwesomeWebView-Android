@@ -52,8 +52,9 @@ public class PermissionHelper {
             }
         }else {
             AndPermission.with(context)
+                    .runtime()
                     .permission(permissionName)
-                    .onGranted(new Action() {
+                    .onGranted(new Action<List<String>>() {
                         @Override
                         public void onAction(List<String> permissions) {
                             // 权限申请成功回调。
@@ -62,7 +63,7 @@ public class PermissionHelper {
                             }
                         }
                     })
-                    .onDenied(new Action() {
+                    .onDenied(new Action<List<String>>() {
                         @Override
                         public void onAction(List<String> permissions) {
                             if (checkPermissionListener != null) {

@@ -17,12 +17,7 @@
 #}
 
 # AndPermission
--keepclassmembers class ** {
-    @com.yanzhenjie.permission.PermissionYes <methods>;
-}
--keepclassmembers class ** {
-    @com.yanzhenjie.permission.PermissionNo <methods>;
-}
+-dontwarn com.yanzhenjie.permission.**
 
 # VideoEnabledWebView
 -keepclassmembers class com.wuadam.awesomewebview.views.VideoEnabledWebView$JavascriptInterface {
