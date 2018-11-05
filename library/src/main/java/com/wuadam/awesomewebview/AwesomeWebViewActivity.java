@@ -43,6 +43,7 @@ import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -214,11 +215,11 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected Boolean webViewCameraEnabled;
     protected Boolean webViewAudioEnabled;
 
-    private String filePickerCamMessage;
-    private ValueCallback<Uri> filePickerFileMessage;
-    private ValueCallback<Uri[]> filePickerFilePath;
-    private final static int FILE_PICKER_REQ_CODE = 1;
-    private String FILE_TYPE = "*/*";
+    protected String filePickerCamMessage;
+    protected ValueCallback<Uri> filePickerFileMessage;
+    protected ValueCallback<Uri[]> filePickerFilePath;
+    protected final static int FILE_PICKER_REQ_CODE = 1;
+    protected String FILE_TYPE = "*/*";
 
     protected String injectJavaScript;
     protected Boolean injectJavaScriptMainPage;
@@ -240,7 +241,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected AppCompatImageButton forward;
     protected AppCompatImageButton more;
     protected VideoEnabledWebView webView;
-    protected MyWebChromeClient webChromeClient;
+    protected WebChromeClient webChromeClient;
     protected View gradient;
     protected View divider;
     protected ProgressBar progressBar;
@@ -474,19 +475,19 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     }
 
     protected void bindViews() {
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
-        appBar = (AppBarLayout) findViewById(R.id.appBar);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarLayout = (RelativeLayout) findViewById(R.id.toolbarLayout);
+        appBar = findViewById(R.id.appBar);
+        toolbar = findViewById(R.id.toolbar);
+        toolbarLayout = findViewById(R.id.toolbarLayout);
 
-        title = (TextView) findViewById(R.id.title);
-        urlTv = (TextView) findViewById(R.id.url);
+        title = findViewById(R.id.title);
+        urlTv = findViewById(R.id.url);
 
-        close = (AppCompatImageButton) findViewById(R.id.close);
-        back = (AppCompatImageButton) findViewById(R.id.back);
-        forward = (AppCompatImageButton) findViewById(R.id.forward);
-        more = (AppCompatImageButton) findViewById(R.id.more);
+        close = findViewById(R.id.close);
+        back = findViewById(R.id.back);
+        forward = findViewById(R.id.forward);
+        more = findViewById(R.id.more);
 
         close.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -495,24 +496,24 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
         gradient = findViewById(R.id.gradient);
         divider = findViewById(R.id.divider);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
-        menuLayout = (RelativeLayout) findViewById(R.id.menuLayout);
-        shadowLayout = (ShadowLayout) findViewById(R.id.shadowLayout);
-        menuBackground = (LinearLayout) findViewById(R.id.menuBackground);
+        menuLayout = findViewById(R.id.menuLayout);
+        shadowLayout = findViewById(R.id.shadowLayout);
+        menuBackground = findViewById(R.id.menuBackground);
 
-        menuRefresh = (LinearLayout) findViewById(R.id.menuRefresh);
-        menuRefreshTv = (TextView) findViewById(R.id.menuRefreshTv);
-        menuFind = (LinearLayout) findViewById(R.id.menuFind);
-        menuFindTv = (TextView) findViewById(R.id.menuFindTv);
-        menuShareVia = (LinearLayout) findViewById(R.id.menuShareVia);
-        menuShareViaTv = (TextView) findViewById(R.id.menuShareViaTv);
-        menuCopyLink = (LinearLayout) findViewById(R.id.menuCopyLink);
-        menuCopyLinkTv = (TextView) findViewById(R.id.menuCopyLinkTv);
-        menuOpenWith = (LinearLayout) findViewById(R.id.menuOpenWith);
-        menuOpenWithTv = (TextView) findViewById(R.id.menuOpenWithTv);
+        menuRefresh = findViewById(R.id.menuRefresh);
+        menuRefreshTv = findViewById(R.id.menuRefreshTv);
+        menuFind = findViewById(R.id.menuFind);
+        menuFindTv = findViewById(R.id.menuFindTv);
+        menuShareVia = findViewById(R.id.menuShareVia);
+        menuShareViaTv = findViewById(R.id.menuShareViaTv);
+        menuCopyLink = findViewById(R.id.menuCopyLink);
+        menuCopyLinkTv = findViewById(R.id.menuCopyLinkTv);
+        menuOpenWith = findViewById(R.id.menuOpenWith);
+        menuOpenWithTv = findViewById(R.id.menuOpenWithTv);
 
-        webLayout = (FrameLayout) findViewById(R.id.webLayout);
+        webLayout = findViewById(R.id.webLayout);
         webView = new VideoEnabledWebView(this);
         webLayout.addView(webView);
     }
@@ -674,7 +675,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             //noinspection all
             View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
             webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView);
-            webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
+            ((MyWebChromeClient)webChromeClient).setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
                 @Override
                 public void toggledFullscreen(boolean fullscreen) {
                     // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
@@ -1065,7 +1066,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (webChromeClient.onBackPressed()) {
+        if (webChromeClient instanceof MyWebChromeClient && ((MyWebChromeClient)webChromeClient).onBackPressed()) {
             return;
         }
         if (menuLayout.getVisibility() == View.VISIBLE) {
@@ -1224,7 +1225,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     // Wait for zoom control to fade away
     // https://code.google.com/p/android/issues/detail?id=15694
     // http://stackoverflow.com/a/5966151/1797648
-    private void destroyWebView() {
+    protected void destroyWebView() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1402,7 +1403,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     }
 
     //Creating image file for upload
-    private File createImage() throws IOException {
+    protected File createImage() throws IOException {
         @SuppressLint("SimpleDateFormat")
         String file_name = new SimpleDateFormat("yyyy_mm_ss").format(new Date());
         String new_name = "file_" + file_name + "_";
@@ -1411,7 +1412,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     }
 
     //Checking permission for storage and camera for writing and uploading images
-    private void getFile() {
+    protected void getFile() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
         PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
