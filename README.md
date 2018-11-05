@@ -2,6 +2,8 @@
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](http://opensource.org/licenses/MIT)
+[![](https://www.jitpack.io/v/hzw1199/AwesomeWebView-Android.svg)](https://www.jitpack.io/#hzw1199/AwesomeWebView-Android)
+
 
 #### This project is based on [FinestWebView](https://github.com/TheFinestArtist/FinestWebView-Android), some useful new features are added.
 
@@ -169,9 +171,12 @@ Easily reference the library in your Android projects using this dependency in y
 
 ```java
 dependencies {
-    implementation 'com.github.hzw1199:AwesomeWebView-Android:1.2'
+    implementation 'com.github.hzw1199:AwesomeWebView-Android:latest-version'
 }
 ```
+
+latest-version:  
+[![](https://www.jitpack.io/v/hzw1199/AwesomeWebView-Android.svg)](https://www.jitpack.io/#hzw1199/AwesomeWebView-Android)
 
 #### Manifest Settings
 
