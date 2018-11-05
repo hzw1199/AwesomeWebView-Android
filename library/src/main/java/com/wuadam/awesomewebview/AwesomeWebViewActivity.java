@@ -240,7 +240,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected AppCompatImageButton back;
     protected AppCompatImageButton forward;
     protected AppCompatImageButton more;
-    protected VideoEnabledWebView webView;
+    protected WebView webView;
     protected WebChromeClient webChromeClient;
     protected View gradient;
     protected View divider;
@@ -674,7 +674,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             ViewGroup videoLayout = (ViewGroup) findViewById(R.id.videoLayout); // Your own view, read class comments
             //noinspection all
             View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
-            webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView);
+            webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, (VideoEnabledWebView) webView);
             ((MyWebChromeClient)webChromeClient).setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
                 @Override
                 public void toggledFullscreen(boolean fullscreen) {
@@ -870,16 +870,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             //            webView.setKeepScreenOn(true);
             //            webView.setScrollbarFadingEnabled(true);
             //            webView.setVerticalFadingEdgeEnabled(false);
-
-            if (data != null) {
-                webView.loadData(data, mimeType, encoding);
-            } else if (url != null) {
-                if (extraHeaders == null) {
-                    webView.loadUrl(url);
-                } else {
-                    webView.loadUrl(url, extraHeaders);
-                }
-            }
         }
 
         { // Divider
@@ -1000,6 +990,18 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
     }
 
+    protected void load() {
+        if (data != null) {
+            webView.loadData(data, mimeType, encoding);
+        } else if (url != null) {
+            if (extraHeaders == null) {
+                webView.loadUrl(url);
+            } else {
+                webView.loadUrl(url, extraHeaders);
+            }
+        }
+    }
+
     protected int getMaxWidth() {
         if (forward.getVisibility() == View.VISIBLE) {
             return DisplayUtil.getWidth() - UnitConverter.dpToPx(100);
@@ -1062,6 +1064,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         bindViews();
         layoutViews();
         initializeViews();
+        load();
     }
 
     @Override
