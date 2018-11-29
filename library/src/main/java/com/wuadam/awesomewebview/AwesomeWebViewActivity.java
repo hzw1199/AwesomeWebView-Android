@@ -242,6 +242,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected AppCompatImageButton more;
     protected WebView webView;
     protected WebChromeClient webChromeClient;
+    protected WebViewClient webViewClient;
     protected View gradient;
     protected View divider;
     protected ProgressBar progressBar;
@@ -514,7 +515,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         menuOpenWithTv = findViewById(R.id.menuOpenWithTv);
 
         webLayout = findViewById(R.id.webLayout);
-        webView = new VideoEnabledWebView(this);
+        webView = buildWebView();
         webLayout.addView(webView);
     }
 
@@ -669,41 +670,11 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
 
         { // WebView
-            // Initialize the VideoEnabledWebChromeClient and set event handlers
-            View nonVideoLayout = webLayout; // Your own view, read class comments
-            ViewGroup videoLayout = (ViewGroup) findViewById(R.id.videoLayout); // Your own view, read class comments
-            //noinspection all
-            View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
-            webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, (VideoEnabledWebView) webView);
-            ((MyWebChromeClient)webChromeClient).setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
-                @Override
-                public void toggledFullscreen(boolean fullscreen) {
-                    // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
-                    if (fullscreen) {
-                        WindowManager.LayoutParams attrs = getWindow().getAttributes();
-                        attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                        attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                        getWindow().setAttributes(attrs);
-                        if (android.os.Build.VERSION.SDK_INT >= 14) {
-                            //noinspection all
-                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
-                        }
-                    } else {
-                        WindowManager.LayoutParams attrs = getWindow().getAttributes();
-                        attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
-                        attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
-                        getWindow().setAttributes(attrs);
-                        if (android.os.Build.VERSION.SDK_INT >= 14) {
-                            //noinspection all
-                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-                        }
-                    }
-
-                }
-            });
+            webChromeClient = buildWebChromeClient();
+            webViewClient = buildWebViewClient();
 
             webView.setWebChromeClient(webChromeClient);
-            webView.setWebViewClient(new MyWebViewClient());
+            webView.setWebViewClient(webViewClient);
             webView.setDownloadListener(downloadListener);
 
             webView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -988,6 +959,50 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             menuOpenWithTv.setTextColor(menuTextColor);
             menuOpenWithTv.setPadding((int) menuTextPaddingLeft, 0, (int) menuTextPaddingRight, 0);
         }
+    }
+
+    protected WebView buildWebView() {
+        return new VideoEnabledWebView(this);
+    }
+
+    protected WebChromeClient buildWebChromeClient() {
+        // Initialize the VideoEnabledWebChromeClient and set event handlers
+        View nonVideoLayout = webLayout; // Your own view, read class comments
+        ViewGroup videoLayout = (ViewGroup) findViewById(R.id.videoLayout); // Your own view, read class comments
+        //noinspection all
+        View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
+        WebChromeClient webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, (VideoEnabledWebView) webView);
+        ((MyWebChromeClient)webChromeClient).setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
+            @Override
+            public void toggledFullscreen(boolean fullscreen) {
+                // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+                if (fullscreen) {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                    }
+                } else {
+                    WindowManager.LayoutParams attrs = getWindow().getAttributes();
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                    attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                    getWindow().setAttributes(attrs);
+                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                        //noinspection all
+                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                    }
+                }
+
+            }
+        });
+        return webChromeClient;
+    }
+
+    protected WebViewClient buildWebViewClient() {
+        return new MyWebViewClient();
     }
 
     protected void load() {

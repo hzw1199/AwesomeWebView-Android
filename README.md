@@ -128,6 +128,13 @@ toolbarVisible(boolean toolbarVisible);
 #### AppBar Scroll and SwipeRefreshLayout Disabled
 `toolbarScrollFlags(int flags)` , `showSwipeRefreshLayout(boolean showSwipeRefreshLayout)` , `swipeRefreshColor(int color)` , `swipeRefreshColorRes(int colorRes)` , `swipeRefreshColors(int[] colors)` and `swipeRefreshColorsRes(int colorsRes)` are disabled because some websites appears to be abnormal with AppBar Scroll and SwipeRefreshLayout features (eg. http://m.baidu.com: You could not load more news when you scroll to end of the page. When you click into news detail page, you could not scroll to end of the page.)
 
+#### Custom WebView
+Override methods to use custom WebView:
+
+`buildWebView() `、`buildWebChromeClient();`、`buildWebViewClient() `
+
+
+
 
 ## Proguard
 No need to add more proguard rules, `consumerProguardFiles` has already handled library proguard rules.
