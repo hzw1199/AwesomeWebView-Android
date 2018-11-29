@@ -1359,7 +1359,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 File photoFile = null;
                 try {
                     photoFile = createImage();
-                    takePictureIntent.putExtra("PhotoPath", filePickerCamMessage);
                 } catch (IOException ex) {
 //                            Log.e("", "Image file creation failed", ex);
                 }
@@ -1396,7 +1395,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                     if (null == filePickerFilePath) {
                         return;
                     }
-                    if (intent == null) {
+                    if (intent == null || intent.getDataString() == null) {
                         if (filePickerCamMessage != null) {
                             results = new Uri[]{Uri.parse(filePickerCamMessage)};
                         }
