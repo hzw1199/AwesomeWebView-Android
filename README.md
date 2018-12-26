@@ -124,6 +124,11 @@ Camera, Audio, Write file, Location permissions are handled in runtime.
 toolbarVisible(boolean toolbarVisible); 
 ```
 
+#### User Agent Append
+```java
+webViewUserAgentAppend(boolean webViewUserAgentAppend); 
+```
+Use this method with `webViewUserAgentString(String webViewUserAgentString)` to control whether to override the whole User Agent or only to append it (a blank will be added automaticly bofore the appended UA while in Append Mode).
 
 #### AppBar Scroll and SwipeRefreshLayout Disabled
 `toolbarScrollFlags(int flags)` , `showSwipeRefreshLayout(boolean showSwipeRefreshLayout)` , `swipeRefreshColor(int color)` , `swipeRefreshColorRes(int colorRes)` , `swipeRefreshColors(int[] colors)` and `swipeRefreshColorsRes(int colorsRes)` are disabled because some websites appears to be abnormal with AppBar Scroll and SwipeRefreshLayout features (eg. http://m.baidu.com: You could not load more news when you scroll to end of the page. When you click into news detail page, you could not scroll to end of the page.)

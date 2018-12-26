@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                     .headersMainPage(false)
                     .injectJavaScript("javascript: alert(\"This is js inject\")")
                     .injectJavaScriptMainPage(true)
+                    .webViewUserAgentString("AwesomeWebView")
+                    .webViewUserAgentAppend(true)
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);
