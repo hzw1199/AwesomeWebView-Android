@@ -155,6 +155,7 @@ public class AwesomeWebView {
         protected Boolean webViewJavaScriptCanOpenWindowsAutomatically;
         protected String webViewDefaultTextEncodingName;
         protected String webViewUserAgentString;
+        protected Boolean webViewUserAgentAppend;
         protected Boolean webViewNeedInitialFocus;
         protected Integer webViewCacheMode;
         protected Integer webViewMixedContentMode;
@@ -866,6 +867,11 @@ public class AwesomeWebView {
 
         public Builder webViewUserAgentString(String webViewUserAgentString) {
             this.webViewUserAgentString = webViewUserAgentString;
+            return this;
+        }
+
+        public Builder webViewUserAgentAppend(boolean webViewUserAgentAppend) {
+            this.webViewUserAgentAppend = webViewUserAgentAppend;
             return this;
         }
 

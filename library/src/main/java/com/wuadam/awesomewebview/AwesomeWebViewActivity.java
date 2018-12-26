@@ -206,6 +206,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected Boolean webViewJavaScriptCanOpenWindowsAutomatically;
     protected String webViewDefaultTextEncodingName;
     protected String webViewUserAgentString;
+    protected Boolean webViewUserAgentAppend;
     protected Boolean webViewNeedInitialFocus;
     protected Integer webViewCacheMode;
     protected Integer webViewMixedContentMode;
@@ -455,6 +456,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 builder.webViewJavaScriptCanOpenWindowsAutomatically;
         webViewDefaultTextEncodingName = builder.webViewDefaultTextEncodingName;
         webViewUserAgentString = builder.webViewUserAgentString;
+        webViewUserAgentAppend = builder.webViewUserAgentAppend;
         webViewNeedInitialFocus = builder.webViewNeedInitialFocus;
         webViewCacheMode = builder.webViewCacheMode;
         webViewMixedContentMode = builder.webViewMixedContentMode;
@@ -820,7 +822,9 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             if (webViewDefaultTextEncodingName != null) {
                 settings.setDefaultTextEncodingName(webViewDefaultTextEncodingName);
             }
-            if (webViewUserAgentString != null) settings.setUserAgentString(webViewUserAgentString);
+            if (webViewUserAgentString != null) {
+                settings.setUserAgentString(webViewUserAgentAppend? settings.getUserAgentString() + " " + webViewUserAgentString: webViewUserAgentString);
+            }
             if (webViewNeedInitialFocus != null)
                 settings.setNeedInitialFocus(webViewNeedInitialFocus);
             if (webViewCacheMode != null) settings.setCacheMode(webViewCacheMode);
