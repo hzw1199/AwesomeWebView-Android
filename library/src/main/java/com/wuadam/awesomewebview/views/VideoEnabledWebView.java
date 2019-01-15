@@ -2,12 +2,11 @@ package com.wuadam.awesomewebview.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import com.wuadam.awesomewebview.helpers.VideoJsHelper;
 
 import java.util.Map;
 
@@ -25,49 +24,27 @@ import java.util.Map;
  */
 public class VideoEnabledWebView extends WebView
 {
-    public class JavascriptInterface
-    {
-        @android.webkit.JavascriptInterface @SuppressWarnings("unused")
-        public void notifyVideoEnd() // Must match Javascript interface method of VideoEnabledWebChromeClient
-        {
-            Log.d("___", "GOT IT");
-            // This code is not executed in the UI thread, so we must force that to happen
-            new Handler(Looper.getMainLooper()).post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    if (videoEnabledWebChromeClient != null)
-                    {
-                        videoEnabledWebChromeClient.onHideCustomView();
-                    }
-                }
-            });
-        }
-    }
-
-    private VideoEnabledWebChromeClient videoEnabledWebChromeClient;
-    private boolean addedJavascriptInterface;
+    private VideoJsHelper videoJsHelper;
 
     @SuppressWarnings("unused")
     public VideoEnabledWebView(Context context)
     {
         super(context);
-        addedJavascriptInterface = false;
+        videoJsHelper = new VideoJsHelper();
     }
 
     @SuppressWarnings("unused")
     public VideoEnabledWebView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        addedJavascriptInterface = false;
+        videoJsHelper = new VideoJsHelper();
     }
 
     @SuppressWarnings("unused")
     public VideoEnabledWebView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        addedJavascriptInterface = false;
+        videoJsHelper = new VideoJsHelper();
     }
 
     /**
@@ -77,7 +54,7 @@ public class VideoEnabledWebView extends WebView
     @SuppressWarnings("unused")
     public boolean isVideoFullscreen()
     {
-        return videoEnabledWebChromeClient != null && videoEnabledWebChromeClient.isVideoFullscreen();
+        return videoJsHelper.isVideoFullscreen();
     }
 
     /**
@@ -88,10 +65,7 @@ public class VideoEnabledWebView extends WebView
     {
         getSettings().setJavaScriptEnabled(true);
 
-        if (client instanceof VideoEnabledWebChromeClient)
-        {
-            this.videoEnabledWebChromeClient = (VideoEnabledWebChromeClient) client;
-        }
+        videoJsHelper.setWebChromeClient(client);
 
         super.setWebChromeClient(client);
     }
@@ -99,41 +73,29 @@ public class VideoEnabledWebView extends WebView
     @Override
     public void loadData(String data, String mimeType, String encoding)
     {
-        addJavascriptInterface();
+        videoJsHelper.addJavascriptInterface(this);
         super.loadData(data, mimeType, encoding);
     }
 
     @Override
     public void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl)
     {
-        addJavascriptInterface();
+        videoJsHelper.addJavascriptInterface(this);
         super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
     }
 
     @Override
     public void loadUrl(String url)
     {
-        addJavascriptInterface();
+        videoJsHelper.addJavascriptInterface(this);
         super.loadUrl(url);
     }
 
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders)
     {
-        addJavascriptInterface();
+        videoJsHelper.addJavascriptInterface(this);
         super.loadUrl(url, additionalHttpHeaders);
-    }
-
-    private void addJavascriptInterface()
-    {
-        if (!addedJavascriptInterface)
-        {
-            // Add javascript interface to be called when the video ends (must be done before page load)
-            //noinspection all
-            addJavascriptInterface(new JavascriptInterface(), "_VideoEnabledWebView"); // Must match Javascript interface name of VideoEnabledWebChromeClient
-
-            addedJavascriptInterface = true;
-        }
     }
 
 }

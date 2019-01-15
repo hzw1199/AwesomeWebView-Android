@@ -985,7 +985,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                     attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                         //noinspection all
                         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
                     }
@@ -994,7 +994,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
                     attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
                     getWindow().setAttributes(attrs);
-                    if (android.os.Build.VERSION.SDK_INT >= 14) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                         //noinspection all
                         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
                     }

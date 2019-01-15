@@ -56,7 +56,9 @@
     <RelativeLayout
         android:id="@+id/videoLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:visibility="invisible">
 
         <!-- View that will be shown while the fullscreen video loads. For example you could include
         a "Loading..." message. However, in this particular example this view is actually defined in

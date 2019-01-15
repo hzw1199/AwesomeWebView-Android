@@ -5,6 +5,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 
 /**
@@ -28,13 +29,13 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
 {
     public interface ToggledFullscreenCallback
     {
-        public void toggledFullscreen(boolean fullscreen);
+        void toggledFullscreen(boolean fullscreen);
     }
 
     private View activityNonVideoView;
     private ViewGroup activityVideoView;
     private View loadingView;
-    private VideoEnabledWebView webView;
+    private WebView webView;
 
     private boolean isVideoFullscreen; // Indicates if the video is being displayed using a custom view (typically full-screen)
     private FrameLayout videoViewContainer;
@@ -91,7 +92,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
      * Note: The web page must only contain one video tag in order for the HTML5 video ended event to work. This could be improved if needed (see Javascript code).
      */
     @SuppressWarnings("unused")
-    public VideoEnabledWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, VideoEnabledWebView webView)
+    public VideoEnabledWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, WebView webView)
     {
         this.activityNonVideoView = activityNonVideoView;
         this.activityVideoView = activityVideoView;
@@ -135,6 +136,7 @@ public class VideoEnabledWebChromeClient extends WebChromeClient implements Medi
 
             // Hide the non-video view, add the video view, and show it
             activityNonVideoView.setVisibility(View.INVISIBLE);
+            activityVideoView.setVisibility(View.VISIBLE);
             activityVideoView.addView(videoViewContainer, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             activityVideoView.setVisibility(View.VISIBLE);
 
