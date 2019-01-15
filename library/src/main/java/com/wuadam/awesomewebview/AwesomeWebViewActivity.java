@@ -975,8 +975,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         ViewGroup videoLayout = (ViewGroup) findViewById(R.id.videoLayout); // Your own view, read class comments
         //noinspection all
         View loadingView = getLayoutInflater().inflate(R.layout.view_loading_video, null); // Your own view, read class comments
-        WebChromeClient webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, (VideoEnabledWebView) webView);
-        ((MyWebChromeClient)webChromeClient).setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
+        MyWebChromeClient webChromeClient = new MyWebChromeClient(nonVideoLayout, videoLayout, loadingView, webView);
+        webChromeClient.setOnToggledFullscreen(new VideoEnabledWebChromeClient.ToggledFullscreenCallback() {
             @Override
             public void toggledFullscreen(boolean fullscreen) {
                 // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
@@ -1258,7 +1258,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
     public class MyWebChromeClient extends VideoEnabledWebChromeClient {
 
-        public MyWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, VideoEnabledWebView webView) {
+        public MyWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, WebView webView) {
             super(activityNonVideoView, activityVideoView, loadingView, webView);
         }
 

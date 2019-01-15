@@ -19,7 +19,7 @@
 # AndPermission
 -dontwarn com.yanzhenjie.permission.**
 
-# VideoEnabledWebView
--keepclassmembers class com.wuadam.awesomewebview.views.VideoEnabledWebView$JavascriptInterface {
+# JavascriptInterface
+-keepclassmembers class com.wuadam.awesomewebview.helpers.VideoJsHelper$JavascriptInterface {
    public *;
 }

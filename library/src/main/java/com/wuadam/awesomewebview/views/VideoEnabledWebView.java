@@ -58,7 +58,7 @@ public class VideoEnabledWebView extends WebView
     }
 
     /**
-     * Pass only a VideoEnabledWebChromeClient instance.
+     * Pass a VideoEnabledWebChromeClient instance to enable video full-screen.
      */
     @Override @SuppressLint("SetJavaScriptEnabled")
     public void setWebChromeClient(WebChromeClient client)
