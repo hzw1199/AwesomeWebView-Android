@@ -147,6 +147,12 @@ Override methods to use custom WebView:
 ```java
 customMenus(List<CustomMenu> customMenus); 
 ```
+```java
+addCustomMenu(CustomMenu customMenu); 
+```
+
+`CustomMenu` is an object containing two fields:  
+`int titleRes` and `String code` where `titleRes` is the resource id for menu title and `code` is the identifier of this menu item and will be found in callback `WebViewListener.onCustomMenuClick(String menuCode)`.
 
 
 

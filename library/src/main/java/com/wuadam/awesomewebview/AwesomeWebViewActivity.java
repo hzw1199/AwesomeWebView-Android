@@ -987,7 +987,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 TextView customMenuTv = customMenuLayout.findViewById(R.id.customMenu);
                 customMenuLayout.setBackgroundResource(menuSelector);
                 customMenuLayout.setGravity(menuTextGravity);
-                customMenuTv.setText(customMenu.getTitle());
+                customMenuTv.setText(customMenu.getTitleRes());
                 customMenuTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, menuTextSize);
                 customMenuTv.setTypeface(TypefaceHelper.get(this, menuTextFont));
                 customMenuTv.setTextColor(menuTextColor);

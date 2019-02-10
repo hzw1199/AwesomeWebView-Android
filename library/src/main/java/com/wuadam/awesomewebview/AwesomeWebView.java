@@ -665,6 +665,14 @@ public class AwesomeWebView {
             return this;
         }
 
+        public Builder addCustomMenu(@NonNull CustomMenu customMenu) {
+            if (customMenus == null) {
+                customMenus = new ArrayList<>(1);
+            }
+            customMenus.add(customMenu);
+            return this;
+        }
+
         public Builder setCustomAnimations(@AnimRes int animationOpenEnter,
                                            @AnimRes int animationOpenExit, @AnimRes int animationCloseEnter,
                                            @AnimRes int animationCloseExit) {

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             headers.put("Referer", "https://github.com/hzw1199");
 
             List<CustomMenu> customMenus = new ArrayList<>();
-            customMenus.add(new CustomMenu("Custom", "custom_menu"));
+            customMenus.add(new CustomMenu(R.string.menu_custom_0, "custom_menu_0"));
 
             new AwesomeWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
@@ -51,11 +51,14 @@ public class MainActivity extends AppCompatActivity {
                     .statusBarColorRes(R.color.finestWhite)
                     .statusBarIconDark(true)
                     .customMenus(customMenus)
+                    .addCustomMenu(new CustomMenu(R.string.menu_custom_1, "custom_menu_1"))
                     .addWebViewListener(new WebViewListener() {
                         @Override
                         public void onCustomMenuClick(String menuCode) {
-                            if (menuCode.equals("custom_menu")) {
-                                Toast.makeText(MainActivity.this, "Custom Menu Clicked", Toast.LENGTH_SHORT).show();
+                            if (menuCode.equals("custom_menu_0")) {
+                                Toast.makeText(MainActivity.this, "Custom Menu 0 Clicked", Toast.LENGTH_SHORT).show();
+                            } else if (menuCode.equals("custom_menu_1")) {
+                                Toast.makeText(MainActivity.this, "Custom Menu 1 Clicked", Toast.LENGTH_SHORT).show();
                             }
                         }
                     })

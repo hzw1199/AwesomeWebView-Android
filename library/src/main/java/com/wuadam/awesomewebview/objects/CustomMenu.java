@@ -1,18 +1,20 @@
 package com.wuadam.awesomewebview.objects;
 
+import android.support.annotation.StringRes;
+
 import java.io.Serializable;
 
 public class CustomMenu implements Serializable {
-    private String title;
+    private int titleRes;
     private String code;
 
-    public CustomMenu(String title, String code) {
-        this.title = title;
+    public CustomMenu(@StringRes int titleRes, String code) {
+        this.titleRes = titleRes;
         this.code = code;
     }
 
-    public String getTitle() {
-        return title;
+    public int getTitleRes() {
+        return titleRes;
     }
 
     public String getCode() {

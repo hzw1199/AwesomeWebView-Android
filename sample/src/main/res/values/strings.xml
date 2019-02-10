@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">AwesomeWebView</string>
+  <string name="menu_custom_0">Custom 0</string>
+  <string name="menu_custom_1">Custom 1</string>
 </resources>
