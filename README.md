@@ -124,6 +124,11 @@ Camera, Audio, Write file, Location permissions are handled in runtime.
 toolbarVisible(boolean toolbarVisible); 
 ```
 
+#### StatusBar Icon Style
+```java
+statusBarIconDark(boolean statusBarIconDark); 
+```
+
 #### User Agent Append
 ```java
 webViewUserAgentAppend(boolean webViewUserAgentAppend); 

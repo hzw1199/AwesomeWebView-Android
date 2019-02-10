@@ -14,11 +14,11 @@ import android.support.annotation.StyleRes;
 import android.webkit.WebSettings;
 
 import com.thefinestartist.Base;
+import com.thefinestartist.utils.content.Ctx;
+import com.thefinestartist.utils.content.Res;
 import com.wuadam.awesomewebview.enums.Position;
 import com.wuadam.awesomewebview.listeners.BroadCastManager;
 import com.wuadam.awesomewebview.listeners.WebViewListener;
-import com.thefinestartist.utils.content.Ctx;
-import com.thefinestartist.utils.content.Res;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ public class AwesomeWebView {
         protected Integer theme;
 
         protected Integer statusBarColor;
+        protected Boolean statusBarIconDark;
 
         protected Integer toolbarColor;
         protected Boolean toolbarVisible;
@@ -223,6 +224,11 @@ public class AwesomeWebView {
 
         public Builder statusBarColorRes(@ColorRes int colorRes) {
             this.statusBarColor = Res.getColor(colorRes);
+            return this;
+        }
+
+        public Builder statusBarIconDark(boolean statusBarIconDark) {
+            this.statusBarIconDark = statusBarIconDark;
             return this;
         }
 

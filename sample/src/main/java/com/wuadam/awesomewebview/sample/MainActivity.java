@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
                     .injectJavaScriptMainPage(true)
                     .webViewUserAgentString("AwesomeWebView")
                     .webViewUserAgentAppend(true)
+                    .statusBarColorRes(R.color.finestWhite)
+                    .statusBarIconDark(true)
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);

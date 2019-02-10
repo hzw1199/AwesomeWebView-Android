@@ -56,6 +56,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thefinestartist.converters.UnitConverter;
+import com.thefinestartist.utils.etc.APILevel;
+import com.thefinestartist.utils.service.ClipboardManagerUtil;
+import com.thefinestartist.utils.ui.DisplayUtil;
+import com.thefinestartist.utils.ui.ViewUtil;
 import com.wuadam.awesomewebview.enums.Position;
 import com.wuadam.awesomewebview.helpers.BitmapHelper;
 import com.wuadam.awesomewebview.helpers.ColorHelper;
@@ -67,10 +71,6 @@ import com.wuadam.awesomewebview.listeners.BroadCastManager;
 import com.wuadam.awesomewebview.views.ShadowLayout;
 import com.wuadam.awesomewebview.views.VideoEnabledWebChromeClient;
 import com.wuadam.awesomewebview.views.VideoEnabledWebView;
-import com.thefinestartist.utils.etc.APILevel;
-import com.thefinestartist.utils.service.ClipboardManagerUtil;
-import com.thefinestartist.utils.ui.DisplayUtil;
-import com.thefinestartist.utils.ui.ViewUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,6 +94,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected int theme;
 
     protected int statusBarColor;
+    protected boolean statusBarIconDark;
 
     protected int toolbarColor;
     protected boolean toolbarVisible;
@@ -306,6 +307,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         rtl = builder.rtl != null ? builder.rtl : getResources().getBoolean(R.bool.is_right_to_left);
 
         statusBarColor = builder.statusBarColor != null ? builder.statusBarColor : colorPrimaryDark;
+        statusBarIconDark = builder.statusBarIconDark != null ? builder.statusBarIconDark : false;
 
         toolbarColor = builder.toolbarColor != null ? builder.toolbarColor : colorPrimary;
         toolbarVisible = builder.toolbarVisible != null ? builder.toolbarVisible : true;
@@ -622,6 +624,15 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(statusBarColor);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                if (statusBarIconDark) {
+                    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                } else {
+                    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                }
             }
         }
 
