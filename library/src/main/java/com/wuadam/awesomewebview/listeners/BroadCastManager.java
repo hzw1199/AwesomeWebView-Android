@@ -25,6 +25,7 @@ public class BroadCastManager {
     static final String EXTRA_CONTENT_DISPOSITION = "EXTRA_CONTENT_DISPOSITION";
     static final String EXTRA_MIME_TYPE = "EXTRA_MIME_TYPE";
     static final String EXTRA_CONTENT_LENGTH = "EXTRA_CONTENT_LENGTH";
+    static final String EXTRA_MENU_CODE = "EXTRA_MENU_CODE";
 
     protected int key;
     protected List<WebViewListener> listeners;
@@ -103,6 +104,11 @@ public class BroadCastManager {
         sendBroadCast(context, intent);
     }
 
+    public static void onCustomMenuClick(Context context, int key, String menuCode) {
+        Intent intent = getBaseIntent(key, Type.CUSTOM_MENU_CLICK).putExtra(EXTRA_MENU_CODE, menuCode);
+        sendBroadCast(context, intent);
+    }
+
     public static void unregister(Context context, int key) {
         Intent intent = getBaseIntent(key, Type.UNREGISTER);
         sendBroadCast(context, intent);
@@ -134,6 +140,9 @@ public class BroadCastManager {
                 break;
             case DOWNLOADED_START:
                 onDownloadStart(intent);
+                break;
+            case CUSTOM_MENU_CLICK:
+                onCustomMenuClick(intent);
                 break;
             case UNREGISTER:
                 unregister();
@@ -184,11 +193,17 @@ public class BroadCastManager {
                     intent.getStringExtra(EXTRA_MIME_TYPE), intent.getLongExtra(EXTRA_CONTENT_LENGTH, 0l));
     }
 
+    public void onCustomMenuClick(Intent intent) {
+        for (WebViewListener listener: listeners) {
+            listener.onCustomMenuClick(intent.getStringExtra(EXTRA_MENU_CODE));
+        }
+    }
+
     private void unregister() {
         if (manager != null && receiver != null) manager.unregisterReceiver(receiver);
     }
 
     public enum Type {
-        PROGRESS_CHANGED, RECEIVED_TITLE, RECEIVED_TOUCH_ICON_URL, PAGE_STARTED, PAGE_FINISHED, LOAD_RESOURCE, PAGE_COMMIT_VISIBLE, DOWNLOADED_START, UNREGISTER
+        PROGRESS_CHANGED, RECEIVED_TITLE, RECEIVED_TOUCH_ICON_URL, PAGE_STARTED, PAGE_FINISHED, LOAD_RESOURCE, PAGE_COMMIT_VISIBLE, DOWNLOADED_START, CUSTOM_MENU_CLICK, UNREGISTER
     }
 }

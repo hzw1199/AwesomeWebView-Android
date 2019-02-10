@@ -143,6 +143,10 @@ Override methods to use custom WebView:
 
 `buildWebView() `、`buildWebChromeClient();`、`buildWebViewClient() `
 
+#### Custom Menu
+```java
+customMenus(List<CustomMenu> customMenus); 
+```
 
 
 

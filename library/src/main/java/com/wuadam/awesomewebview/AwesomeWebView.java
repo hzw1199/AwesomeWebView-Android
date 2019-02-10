@@ -19,6 +19,7 @@ import com.thefinestartist.utils.content.Res;
 import com.wuadam.awesomewebview.enums.Position;
 import com.wuadam.awesomewebview.listeners.BroadCastManager;
 import com.wuadam.awesomewebview.listeners.WebViewListener;
+import com.wuadam.awesomewebview.objects.CustomMenu;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -110,6 +111,8 @@ public class AwesomeWebView {
         protected Integer stringResPhotoSavedTo;
         protected Boolean fileChooserEnabled;
         protected Integer stringResFileChooserTitle;
+
+        protected List<CustomMenu> customMenus = new ArrayList<>();
 
         protected Integer animationOpenEnter = R.anim.modal_activity_open_enter;
         protected Integer animationOpenExit = R.anim.modal_activity_open_exit;
@@ -654,6 +657,11 @@ public class AwesomeWebView {
 
         public Builder stringResFileChooserTitle(@StringRes int stringResFileChooserTitle) {
             this.stringResFileChooserTitle = stringResFileChooserTitle;
+            return this;
+        }
+
+        public Builder customMenus(@NonNull List<CustomMenu> customMenus) {
+            this.customMenus = customMenus;
             return this;
         }
 

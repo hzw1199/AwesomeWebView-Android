@@ -29,4 +29,7 @@ public abstract class WebViewListener {
     public void onDownloadStart(String url, String userAgent, String contentDisposition,
                                 String mimeType, long contentLength) {
     }
+
+    public void onCustomMenuClick(String menuCode) {
+    }
 }

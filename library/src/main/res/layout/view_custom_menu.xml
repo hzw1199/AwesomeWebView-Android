@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/customMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/selector_light_theme"
+        android:gravity="center_vertical|left">
+
+        <TextView
+            android:id="@+id/customMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:paddingLeft="16dp"
+            android:paddingRight="32dp"
+            android:singleLine="true"
+            android:text="@string/copy_link"
+            android:textColor="@color/finestBlack"
+            android:textSize="@dimen/defaultMenuTextSize" />
+    </LinearLayout>
+</FrameLayout>

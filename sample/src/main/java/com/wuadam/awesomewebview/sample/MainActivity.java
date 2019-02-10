@@ -4,10 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.wuadam.awesomewebview.AwesomeWebView;
+import com.wuadam.awesomewebview.listeners.WebViewListener;
+import com.wuadam.awesomewebview.objects.CustomMenu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
         if (view.getId() == R.id.functionPlayground) {
             Map<String, String> headers = new HashMap<>();
             headers.put("Referer", "https://github.com/hzw1199");
+
+            List<CustomMenu> customMenus = new ArrayList<>();
+            customMenus.add(new CustomMenu("Custom", "custom_menu"));
 
             new AwesomeWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
@@ -42,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
                     .webViewUserAgentAppend(true)
                     .statusBarColorRes(R.color.finestWhite)
                     .statusBarIconDark(true)
+                    .customMenus(customMenus)
+                    .addWebViewListener(new WebViewListener() {
+                        @Override
+                        public void onCustomMenuClick(String menuCode) {
+                            if (menuCode.equals("custom_menu")) {
+                                Toast.makeText(MainActivity.this, "Custom Menu Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {
             //            Intent intent = new Intent(this, WebViewActivity.class);

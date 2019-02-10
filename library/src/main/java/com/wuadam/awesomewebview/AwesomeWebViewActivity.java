@@ -31,6 +31,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ import com.wuadam.awesomewebview.helpers.PermissionHelper;
 import com.wuadam.awesomewebview.helpers.TypefaceHelper;
 import com.wuadam.awesomewebview.helpers.UrlParser;
 import com.wuadam.awesomewebview.listeners.BroadCastManager;
+import com.wuadam.awesomewebview.objects.CustomMenu;
 import com.wuadam.awesomewebview.views.ShadowLayout;
 import com.wuadam.awesomewebview.views.VideoEnabledWebChromeClient;
 import com.wuadam.awesomewebview.views.VideoEnabledWebView;
@@ -163,6 +165,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected int stringResPhotoSavedTo;
     protected boolean fileChooserEnabled;
     protected int stringResFileChooserTitle;
+
+    protected List<CustomMenu> customMenus;
 
     protected int animationCloseEnter;
     protected int animationCloseExit;
@@ -341,7 +345,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         progressBarHeight = builder.progressBarHeight != null ? builder.progressBarHeight
                 : getResources().getDimension(R.dimen.defaultProgressBarHeight);
         progressBarPosition = builder.progressBarPosition != null ? builder.progressBarPosition
-                : Position.BOTTON_OF_TOOLBAR;
+                : Position.BOTTOM_OF_TOOLBAR;
 
         titleDefault = builder.titleDefault;
         updateTitleFromHtml = builder.updateTitleFromHtml != null ? builder.updateTitleFromHtml : true;
@@ -402,6 +406,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         fileChooserEnabled = builder.fileChooserEnabled != null ? builder.fileChooserEnabled : true;
         stringResFileChooserTitle =
                 builder.stringResFileChooserTitle != null ? builder.stringResFileChooserTitle : R.string.file_chooser;
+
+        customMenus = builder.customMenus != null? builder.customMenus: new ArrayList<CustomMenu>(0);
 
         animationCloseEnter = builder.animationCloseEnter != null ? builder.animationCloseEnter
                 : R.anim.modal_activity_close_enter;
@@ -582,7 +588,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 case TOP_OF_TOOLBAR:
                     params.setMargins(0, 0, 0, 0);
                     break;
-                case BOTTON_OF_TOOLBAR:
+                case BOTTOM_OF_TOOLBAR:
                     params.setMargins(0, (int) toolbarHeight - (int) progressBarHeight, 0, 0);
                     break;
                 case TOP_OF_WEBVIEW:
@@ -668,7 +674,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                     || showMenuFind
                     || showMenuShareVia
                     || showMenuCopyLink
-                    || showMenuOpenWith) && showIconMenu) {
+                    || showMenuOpenWith
+                    || customMenus.size() > 0) && showIconMenu) {
                 more.setVisibility(View.VISIBLE);
             } else {
                 more.setVisibility(View.GONE);
@@ -893,7 +900,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 case TOP_OF_TOOLBAR:
                     params.setMargins(0, 0, 0, 0);
                     break;
-                case BOTTON_OF_TOOLBAR:
+                case BOTTOM_OF_TOOLBAR:
                     params.setMargins(0, (int) toolbarHeight - (int) progressBarHeight, 0, 0);
                     break;
                 case TOP_OF_WEBVIEW:
@@ -973,6 +980,29 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             menuOpenWithTv.setTypeface(TypefaceHelper.get(this, menuTextFont));
             menuOpenWithTv.setTextColor(menuTextColor);
             menuOpenWithTv.setPadding((int) menuTextPaddingLeft, 0, (int) menuTextPaddingRight, 0);
+
+            for (final CustomMenu customMenu: customMenus) {
+                View customMenuRoot = LayoutInflater.from(AwesomeWebViewActivity.this).inflate(R.layout.view_custom_menu, null, false);
+                LinearLayout customMenuLayout = customMenuRoot.findViewById(R.id.customMenuLayout);
+                TextView customMenuTv = customMenuLayout.findViewById(R.id.customMenu);
+                customMenuLayout.setBackgroundResource(menuSelector);
+                customMenuLayout.setGravity(menuTextGravity);
+                customMenuTv.setText(customMenu.getTitle());
+                customMenuTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, menuTextSize);
+                customMenuTv.setTypeface(TypefaceHelper.get(this, menuTextFont));
+                customMenuTv.setTextColor(menuTextColor);
+                customMenuTv.setPadding((int) menuTextPaddingLeft, 0, (int) menuTextPaddingRight, 0);
+
+                customMenuLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BroadCastManager.onCustomMenuClick(AwesomeWebViewActivity.this, key, customMenu.getCode());
+                        hideMenu();
+                    }
+                });
+
+                menuBackground.addView(customMenuRoot, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
         }
     }
 
