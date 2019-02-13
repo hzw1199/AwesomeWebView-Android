@@ -107,13 +107,28 @@ android:hardwareAccelerated="true"
 ```
 
 #### Cookie
+
+You can enable cookies.
+
 ```java
 webViewCookieEnabled(boolean webViewCookieEnabled);    // Already in FinestWebView
 ```
-Add following code in your Application Class:  
+Then add following code in your Application Class:  
 
 ```java
 CookieManager.getInstance().setAcceptCookie(true);  
+```
+
+Besides, you can even inject cookies.
+
+```java
+Map<String, Map<String, String>> cookies = new HashMap<>();
+Map<String, String> cookie_0 = new HashMap<>();
+cookie_0.put("key_0", "value_0");
+cookie_0.put("key_1", "value_1");
+cookies.put("url_0", cookie_0);
+
+injectCookies(cookies)
 ```
 
 #### Dynamic permission Acquire

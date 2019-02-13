@@ -31,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
             List<CustomMenu> customMenus = new ArrayList<>();
             customMenus.add(new CustomMenu(R.string.menu_custom_0, "custom_menu_0"));
 
+            Map<String, Map<String, String>> cookies = new HashMap<>();
+            Map<String, String> cookie_0 = new HashMap<>();
+            cookie_0.put("key_0", "value_0");
+            cookie_0.put("key_1", "value_1");
+            cookies.put("http://www.html-kit.com/tools/cookietester/", cookie_0);
+
             new AwesomeWebView.Builder(this)
                     .webViewGeolocationEnabled(true)
                     .webViewCookieEnabled(true)
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     .statusBarIconDark(true)
                     .customMenus(customMenus)
                     .addCustomMenu(new CustomMenu(R.string.menu_custom_1, "custom_menu_1"))
+                    .injectCookies(cookies)
                     .addWebViewListener(new WebViewListener() {
                         @Override
                         public void onCustomMenuClick(String menuCode) {

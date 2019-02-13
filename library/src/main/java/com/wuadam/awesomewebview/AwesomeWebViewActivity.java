@@ -42,6 +42,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
@@ -231,6 +232,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
     protected String injectJavaScript;
     protected Boolean injectJavaScriptMainPage;
+
+    protected Map<String, Map<String, String>> injectCookies;
 
     protected String mimeType;
     protected String encoding;
@@ -483,6 +486,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         injectJavaScript = builder.injectJavaScript;
         injectJavaScriptMainPage = builder.injectJavaScriptMainPage != null ? builder.injectJavaScriptMainPage : true;
         extraHeadersMainPage = builder.extraHeadersMainPage != null ? builder.extraHeadersMainPage : true;
+        injectCookies = builder.injectCookies;
 
         mimeType = builder.mimeType;
         encoding = builder.encoding;
@@ -1075,6 +1079,29 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         return new MyWebViewClient();
     }
 
+    protected void injectCookie() {
+        if (injectCookies != null && injectCookies.size() > 0) {
+            // https://blog.csdn.net/juhua2012/article/details/52249720
+            CookieSyncManager.createInstance(this);
+            CookieSyncManager.getInstance().sync();
+
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+            for (String url: injectCookies.keySet()) {
+                Map<String, String> cookie = injectCookies.get(url);
+                if (cookie == null || cookie.size() == 0) {
+                    continue;
+                }
+                for (String key: cookie.keySet()) {
+                    String value = cookie.get(key);
+                    String cookieStr = key + "=" + value;
+                    cookieManager.setCookie(url, cookieStr);
+                }
+            }
+            CookieSyncManager.getInstance().sync();
+        }
+    }
+
     protected void load() {
         if (data != null) {
             webView.loadData(data, mimeType, encoding);
@@ -1149,6 +1176,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         bindViews();
         layoutViews();
         initializeViews();
+        injectCookie();
         load();
     }
 

@@ -172,6 +172,8 @@ public class AwesomeWebView {
         protected String injectJavaScript;
         protected Boolean injectJavaScriptMainPage;
 
+        protected Map<String, Map<String, String>> injectCookies;
+
         protected String mimeType;
         protected String encoding;
         protected String data;
@@ -964,6 +966,11 @@ public class AwesomeWebView {
 
         public Builder injectJavaScriptMainPage(boolean injectJavaScriptMainPage) {
             this.injectJavaScriptMainPage = injectJavaScriptMainPage;
+            return this;
+        }
+
+        public Builder injectCookies(Map<String, Map<String, String>> injectCookies) {
+            this.injectCookies = injectCookies;
             return this;
         }
 
