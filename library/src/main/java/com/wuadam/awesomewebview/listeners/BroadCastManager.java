@@ -26,6 +26,7 @@ public class BroadCastManager {
     static final String EXTRA_MIME_TYPE = "EXTRA_MIME_TYPE";
     static final String EXTRA_CONTENT_LENGTH = "EXTRA_CONTENT_LENGTH";
     static final String EXTRA_MENU_CODE = "EXTRA_MENU_CODE";
+    static final String EXTRA_IMAGE_URL = "EXTRA_IMAGE_URL";
 
     protected int key;
     protected List<WebViewListener> listeners;
@@ -109,6 +110,11 @@ public class BroadCastManager {
         sendBroadCast(context, intent);
     }
 
+    public static void onClickImage(Context context, int key, String imageUrl) {
+        Intent intent = getBaseIntent(key, Type.CLICK_IMAGE).putExtra(EXTRA_IMAGE_URL, imageUrl);
+        sendBroadCast(context, intent);
+    }
+
     public static void unregister(Context context, int key) {
         Intent intent = getBaseIntent(key, Type.UNREGISTER);
         sendBroadCast(context, intent);
@@ -143,6 +149,9 @@ public class BroadCastManager {
                 break;
             case CUSTOM_MENU_CLICK:
                 onCustomMenuClick(intent);
+                break;
+            case CLICK_IMAGE:
+                onClickImage(intent);
                 break;
             case UNREGISTER:
                 unregister();
@@ -199,11 +208,17 @@ public class BroadCastManager {
         }
     }
 
+    public void onClickImage(Intent intent) {
+        for (WebViewListener listener: listeners) {
+            listener.onClickImage(intent.getStringExtra(EXTRA_IMAGE_URL));
+        }
+    }
+
     private void unregister() {
         if (manager != null && receiver != null) manager.unregisterReceiver(receiver);
     }
 
     public enum Type {
-        PROGRESS_CHANGED, RECEIVED_TITLE, RECEIVED_TOUCH_ICON_URL, PAGE_STARTED, PAGE_FINISHED, LOAD_RESOURCE, PAGE_COMMIT_VISIBLE, DOWNLOADED_START, CUSTOM_MENU_CLICK, UNREGISTER
+        PROGRESS_CHANGED, RECEIVED_TITLE, RECEIVED_TOUCH_ICON_URL, PAGE_STARTED, PAGE_FINISHED, LOAD_RESOURCE, PAGE_COMMIT_VISIBLE, DOWNLOADED_START, CUSTOM_MENU_CLICK, CLICK_IMAGE, UNREGISTER
     }
 }

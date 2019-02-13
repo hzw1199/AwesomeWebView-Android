@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "Custom Menu 1 Clicked", Toast.LENGTH_SHORT).show();
                             }
                         }
+
+                        @Override
+                        public void onClickImage(String imageUrl) {
+                            Toast.makeText(MainActivity.this, "Image clicked: " + imageUrl, Toast.LENGTH_SHORT).show();
+                        }
                     })
                     .show("file:///android_asset/test.html");
         } else if (view.getId() == R.id.redTheme) {

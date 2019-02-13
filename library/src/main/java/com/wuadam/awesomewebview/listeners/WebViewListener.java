@@ -32,4 +32,7 @@ public abstract class WebViewListener {
 
     public void onCustomMenuClick(String menuCode) {
     }
+
+    public void onClickImage(String imageUrl) {
+    }
 }

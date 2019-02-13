@@ -154,6 +154,13 @@ addCustomMenu(CustomMenu customMenu);
 `CustomMenu` is an object containing two fields:  
 `int titleRes` and `String code` where `titleRes` is the resource id for menu title and `code` is the identifier of this menu item and will be found in callback `WebViewListener.onCustomMenuClick(String menuCode)`.
 
+#### More WebView Listeners
+Besides the listener of FinestWebView, AwesomeWebView has more listeners to listen event from WebView.
+
+```java
+public void onCustomMenuClick(String menuCode);
+public void onClickImage(String imageUrl);
+```
 
 
 ## Proguard
@@ -550,6 +557,7 @@ new FinestWebView.Builder(activity)
 
 #### WebView Listeners
 FinestWebView has its own listeners to listen event from WebView
+
 ```java
 public void onProgressChanged(int progress);
 public void onReceivedTitle(String title);

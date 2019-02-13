@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.RequiresApi;
@@ -32,6 +33,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -88,7 +90,7 @@ import java.util.Map;
  * Created by Leonardo on 11/14/15.
  */
 public class AwesomeWebViewActivity extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, Handler.Callback {
 
     protected int key;
 
@@ -274,6 +276,10 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                     contentDisposition, mimetype, contentLength);
         }
     };
+
+    protected Handler handler = new Handler(this);
+    protected final int MSG_CLICK_ON_WEBVIEW = 1;
+    protected final int MSG_CLICK_ON_URL = 2;
 
     protected void initializeOptions() {
         Intent intent = getIntent();
@@ -741,6 +747,25 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                         AlertDialog dialog = builder.create();
                         dialog.show();
                         return true;
+                    }
+                    return false;
+                }
+            });
+
+            webView.setOnTouchListener(new View.OnTouchListener() {
+                private float xDown, yDown;
+                private long timeDown;
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (v == webView && event.getAction() == MotionEvent.ACTION_DOWN) {
+                        xDown = event.getX();
+                        yDown = event.getY();
+                        timeDown = System.currentTimeMillis();
+                    } else if (v == webView && event.getAction() == MotionEvent.ACTION_UP){
+                        if (Math.abs(xDown - event.getX()) < 50 && Math.abs(yDown - event.getY()) < 50 && System.currentTimeMillis() - timeDown < 200) {
+                            // https://stackoverflow.com/a/5125620
+                            handler.sendEmptyMessageDelayed(MSG_CLICK_ON_WEBVIEW, 500);
+                        }
                     }
                     return false;
                 }
@@ -1297,6 +1322,24 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }, ViewConfiguration.getZoomControlsTimeout() + 1000L);
     }
 
+    @Override
+    public boolean handleMessage(Message msg) {
+        if (msg.what == MSG_CLICK_ON_URL){
+            handler.removeMessages(MSG_CLICK_ON_WEBVIEW);
+            return true;
+        }
+        if (msg.what == MSG_CLICK_ON_WEBVIEW){
+            final WebView.HitTestResult hitTestResult = webView.getHitTestResult();
+            // 如果是图片类型或者是带有图片链接的类型
+            if (hitTestResult.getType() == WebView.HitTestResult.IMAGE_TYPE ||
+                    hitTestResult.getType() == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                BroadCastManager.onClickImage(AwesomeWebViewActivity.this, key, hitTestResult.getExtra());
+            }
+            return true;
+        }
+        return false;
+    }
+
     public class MyWebChromeClient extends VideoEnabledWebChromeClient {
 
         public MyWebChromeClient(View activityNonVideoView, ViewGroup activityVideoView, View loadingView, WebView webView) {
@@ -1369,6 +1412,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
         //Handling input[type="file"] requests for android API 16+
         public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            handler.sendEmptyMessage(MSG_CLICK_ON_URL);
+
             if (!fileChooserEnabled) {
                 uploadMsg.onReceiveValue(null);
                 return;
@@ -1383,6 +1428,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         //Handling input[type="file"] requests for android API 21+
         @Override
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            handler.sendEmptyMessage(MSG_CLICK_ON_URL);
+
             if (!fileChooserEnabled) {
                 filePathCallback.onReceiveValue(null);
                 return true;
@@ -1532,6 +1579,8 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            handler.sendEmptyMessage(MSG_CLICK_ON_URL);
+
             if (url.endsWith(".mp4")) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(url), "video/*");
