@@ -200,6 +200,9 @@ No need to add more proguard rules, `consumerProguardFiles` has already handled 
 ### Video Full Screen
 ![](/art/awesome/video_full_screen.jpeg)
 
+### Inject Cookies
+![](/art/awesome/inject_cookies.jpeg)
+
 
 ## Getting started
 
