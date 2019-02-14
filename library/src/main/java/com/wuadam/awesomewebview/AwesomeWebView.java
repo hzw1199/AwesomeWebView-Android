@@ -653,7 +653,7 @@ public class AwesomeWebView {
             return this;
         }
 
-        public Builder setStringResPhotoSaveFailed(Integer stringResPhotoSaveFailed) {
+        public Builder stringResPhotoSaveFailed(@StringRes int stringResPhotoSaveFailed) {
             this.stringResPhotoSaveFailed = stringResPhotoSaveFailed;
             return this;
         }

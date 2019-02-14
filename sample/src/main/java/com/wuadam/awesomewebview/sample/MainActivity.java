@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
                     .stringResSavePhoto(R.string.save_photo)
                     .showToastPhotoSavedOrFailed(true)
                     .stringResPhotoSavedTo(R.string.photo_saved_to)
-                    .setStringResPhotoSaveFailed(R.string.photo_save_failed)
+                    .stringResPhotoSaveFailed(R.string.photo_save_failed)
                     .fileChooserEnabled(true)
                     .setHeader(headers)
                     .headersMainPage(false)

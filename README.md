@@ -48,9 +48,10 @@ You can save photos after long press on the photo. Photos will be saved to downl
 
 ```java
 showMenuSavePhoto(boolean showMenuSavePhoto);    // Dynamic permission handled
-stringResSavePhoto(String stringResSavePhoto);
-showToastPhotoSavedTo(boolean showToastPhotoSavedTo);
-stringResPhotoSavedTo(String stringResPhotoSavedTo);
+stringResSavePhoto(@StringRes int stringResSavePhoto);
+showToastPhotoSavedOrFailed(boolean showToastPhotoSavedOrFailed);
+stringResPhotoSavedTo(@StringRes int stringResPhotoSavedTo);
+stringResPhotoSaveFailed(@StringRes int stringResPhotoSaveFailed)
 ```
 ```xml
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
