@@ -44,7 +44,7 @@ webViewAudioEnabled(boolean webViewAudioEnabled);    // Dynamic permission handl
 
 #### Save Photo after Long Press
 
-You can save pictures after long press on the picture.
+You can save photos after long press on the photo. Photos will be saved to download directory. File name is kept to be the same with what in url of photo.
 
 ```java
 showMenuSavePhoto(boolean showMenuSavePhoto);    // Dynamic permission handled
@@ -55,6 +55,8 @@ stringResPhotoSavedTo(String stringResPhotoSavedTo);
 ```xml
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
+
+Some websites may use image files with no extension, so the photo downloaded may not be recognized by your gallery app. AwesomeWebView will automatically handle this condition. Extensions such as ```jpg/png/gif/webp``` will be added automatically after the photo is downloaded.
 
 #### File Chooser
 

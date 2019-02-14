@@ -731,12 +731,17 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                                         DownPicUtil.downPic(url, new DownPicUtil.DownFinishListener() {
 
                                             @Override
-                                            public void getDownPath(String s) {
+                                            public void onDownFinish(String path) {
                                                 if (showToastPhotoSavedTo) {
-                                                    Toast.makeText(AwesomeWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + s, Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(AwesomeWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + path, Toast.LENGTH_LONG).show();
                                                 }
                                                 // 最后通知图库更新
-                                                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + s)));
+                                                getApplicationContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
+                                            }
+
+                                            @Override
+                                            public void onError() {
+
                                             }
                                         });
                                     }

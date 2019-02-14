@@ -6,6 +6,7 @@ package com.wuadam.awesomewebview.helpers;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +22,7 @@ import java.net.URL;
 public  class DownPicUtil {
 
     /**
-     *下载图片，返回图片的地址
+     * Download the pic
      * @param url
      */
     public static void downPic(String url,DownFinishListener downFinishListener){
@@ -50,54 +51,103 @@ public  class DownPicUtil {
                 fileName = split[split.length - 1];
                 // 创建目标文件,不是文件夹
                 File picFile = new File(filePath + File.separator + fileName);
-                if(picFile.exists()){
-                    return  picFile.getPath();
-                }
+                if(! picFile.exists()) {
+                    // if file exists, do not download again
+                    try {
+                        URL picUrl = new URL(url);
+                        //通过图片的链接打开输入流
+                        is = picUrl.openStream();
+                        if (is == null) {
+                            return null;
+                        }
+                        out = new FileOutputStream(picFile);
+                        byte[] b = new byte[1024];
+                        int end;
+                        while ((end = is.read(b)) != -1) {
+                            out.write(b, 0, end);
+                        }
 
-                try {
-                    URL picUrl = new URL(url);
-                    //通过图片的链接打开输入流
-                    is = picUrl.openStream();
-                    if(is==null){
+                        if (is != null) {
+                            is.close();
+                        }
+
+                        if (out != null) {
+                            out.close();
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        return null;
+                    } catch (IOException e) {
+                        e.printStackTrace();
                         return null;
                     }
-                    out = new FileOutputStream(picFile);
-                    byte[] b=new byte[1024];
-                    int end ;
-                    while ((end=is.read(b))!=-1){
-                        out.write(b,0,end);
-                    }
-
-                    if(is!=null){
-                        is.close();
-                    }
-
-                    if(out!=null){
-                        out.close();
-                    }
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
-
+                String[] extensions = fileName.split("\\.");
+                int length = extensions.length;
+                if (length == 0 ||
+                        !extensions[length - 1].equals("jpg") &&
+                        !extensions[length - 1].equals("jpeg") &&
+                        !extensions[length - 1].equals("jpe") &&
+                        !extensions[length - 1].equals("jif") &&
+                        !extensions[length - 1].equals("jfif") &&
+                        !extensions[length - 1].equals("jfi") &&
+                        !extensions[length - 1].equals("png") &&
+                        !extensions[length - 1].equals("webp") &&
+                        !extensions[length - 1].equals("gif")) {
+                    // with no image extension
+                    String extension = FormatHelper.getExtension(picFile);
+                    if (extension == null) {
+                        return picFile.getPath();
+                    }
+                    String newFileName = fileName + "." + extension;
+                    File newFile = new File(filePath + File.separator + newFileName);
+                    if (newFile.exists()) {
+                        // if file of new name exists, use the existing file
+                        return newFile.getPath();
+                    }
+                    if (rename(picFile, newFileName)) {
+                        return newFile.getPath();
+                    } else {
+                        return null;
+                    }
+                }
 
                 return picFile.getPath();
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                if(s!=null){
-                    downFinishListener.getDownPath(s);
+            protected void onPostExecute(String path) {
+                super.onPostExecute(path);
+                if(path!=null){
+                    downFinishListener.onDownFinish(path);
+                } else {
+                    downFinishListener.onError();
                 }
             }
         }.execute();
     }
+
+    private static boolean rename(final File file, final String newName) {
+        // file is null then return false
+        if (file == null) return false;
+        // file doesn't exist then return false
+        if (!file.exists()) return false;
+        // the new name is space then return false
+        if (TextUtils.isEmpty(newName)) return false;
+        // the new name equals old name then return true
+        if (newName.equals(file.getName())) return true;
+        File newFile = new File(file.getParent() + File.separator + newName);
+        // the new name of file exists then return false
+        return !newFile.exists()
+                && file.renameTo(newFile);
+    }
+
+
     //下载完成回调的接口
     public interface DownFinishListener{
-        void getDownPath(String s);
+        void onDownFinish(String path);
+        void onError();
     }
 }
