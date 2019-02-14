@@ -107,8 +107,9 @@ public class AwesomeWebView {
         protected Integer stringResOpenWith;
         protected Boolean showMenuSavePhoto;
         protected Integer stringResSavePhoto;
-        protected Boolean showToastPhotoSavedTo;
+        protected Boolean showToastPhotoSavedOrFailed;
         protected Integer stringResPhotoSavedTo;
+        protected Integer stringResPhotoSaveFailed;
         protected Boolean fileChooserEnabled;
         protected Integer stringResFileChooserTitle;
 
@@ -642,13 +643,18 @@ public class AwesomeWebView {
             return this;
         }
 
-        public Builder showToastPhotoSavedTo(boolean showToastPhotoSavedTo) {
-            this.showToastPhotoSavedTo = showToastPhotoSavedTo;
+        public Builder showToastPhotoSavedOrFailed(boolean showToastPhotoSavedOrFailed) {
+            this.showToastPhotoSavedOrFailed = showToastPhotoSavedOrFailed;
             return this;
         }
 
         public Builder stringResPhotoSavedTo(@StringRes int stringResPhotoSavedTo) {
             this.stringResPhotoSavedTo = stringResPhotoSavedTo;
+            return this;
+        }
+
+        public Builder setStringResPhotoSaveFailed(Integer stringResPhotoSaveFailed) {
+            this.stringResPhotoSaveFailed = stringResPhotoSaveFailed;
             return this;
         }
 

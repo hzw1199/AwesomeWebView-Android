@@ -164,8 +164,9 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected int stringResOpenWith;
     protected boolean showMenuSavePhoto;
     protected int stringResSavePhoto;
-    protected boolean showToastPhotoSavedTo;
+    protected boolean showToastPhotoSavedOrFailed;
     protected int stringResPhotoSavedTo;
+    protected int stringResPhotoSaveFailed;
     protected boolean fileChooserEnabled;
     protected int stringResFileChooserTitle;
 
@@ -409,9 +410,11 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         showMenuSavePhoto = builder.showMenuSavePhoto != null ? builder.showMenuSavePhoto : true;
         stringResSavePhoto =
                 builder.stringResSavePhoto != null ? builder.stringResSavePhoto : R.string.save_photo;
-        showToastPhotoSavedTo = builder.showToastPhotoSavedTo != null ? builder.showToastPhotoSavedTo : true;
+        showToastPhotoSavedOrFailed = builder.showToastPhotoSavedOrFailed != null ? builder.showToastPhotoSavedOrFailed : true;
         stringResPhotoSavedTo =
                 builder.stringResPhotoSavedTo != null ? builder.stringResPhotoSavedTo : R.string.photo_saved_to;
+        stringResPhotoSaveFailed =
+                builder.stringResPhotoSaveFailed != null ? builder.stringResPhotoSaveFailed : R.string.photo_save_failed;
         fileChooserEnabled = builder.fileChooserEnabled != null ? builder.fileChooserEnabled : true;
         stringResFileChooserTitle =
                 builder.stringResFileChooserTitle != null ? builder.stringResFileChooserTitle : R.string.file_chooser;
@@ -732,7 +735,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
                                             @Override
                                             public void onDownFinish(String path) {
-                                                if (showToastPhotoSavedTo) {
+                                                if (showToastPhotoSavedOrFailed) {
                                                     Toast.makeText(AwesomeWebViewActivity.this, getResources().getString(stringResPhotoSavedTo) + path, Toast.LENGTH_LONG).show();
                                                 }
                                                 // 最后通知图库更新
@@ -741,7 +744,9 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
                                             @Override
                                             public void onError() {
-
+                                                if (showToastPhotoSavedOrFailed) {
+                                                    Toast.makeText(AwesomeWebViewActivity.this, getResources().getString(stringResPhotoSaveFailed), Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         });
                                     }
