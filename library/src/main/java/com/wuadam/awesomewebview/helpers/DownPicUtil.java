@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
@@ -25,7 +26,15 @@ public  class DownPicUtil {
      * Download the pic
      * @param url
      */
-    public static void downPic(String url,DownFinishListener downFinishListener){
+    public static void downPic(String url, DownFinishListener downFinishListener){
+        downPic(url, null, null, null, downFinishListener);
+    }
+
+    /**
+     * Download the pic
+     * @param url
+     */
+    public static void downPic(String url, String userAgent, String referer, String cookie, DownFinishListener downFinishListener){
         // 获取存储卡的目录
         String filePath = Environment.getExternalStorageDirectory().getPath();
         File file = new File(filePath + File.separator + Environment.DIRECTORY_DOWNLOADS);
@@ -33,11 +42,11 @@ public  class DownPicUtil {
             file.mkdirs();
         }
 
-        loadPic(file.getPath(),url,downFinishListener);
+        loadPic(file.getPath(), url, userAgent, referer, cookie, downFinishListener);
 
     }
 
-    private static void loadPic(final String filePath, final String url, final DownFinishListener downFinishListener) {
+    private static void loadPic(final String filePath, final String url, final String userAgent, final String referer, final String cookie, final DownFinishListener downFinishListener) {
         new AsyncTask<Void,Void,String>(){
             String fileName;
             InputStream is;
@@ -56,23 +65,48 @@ public  class DownPicUtil {
                     try {
                         URL picUrl = new URL(url);
                         //通过图片的链接打开输入流
-                        is = picUrl.openStream();
-                        if (is == null) {
+                        HttpURLConnection httpURLConnection = (HttpURLConnection)picUrl.openConnection();
+                        httpURLConnection.setConnectTimeout(10000);           //设置连接超时时间
+                        httpURLConnection.setReadTimeout(30000);
+                        httpURLConnection.setDoInput(true);                  //打开输入流，以便从服务器获取数据
+                        httpURLConnection.setDoOutput(false);                 //Get请求不需要DoOutPut
+                        httpURLConnection.setRequestMethod("GET");          //设置以Get方式请求数据
+                        httpURLConnection.setUseCaches(false);               //不使用缓存
+                        //设置请求体的类型是文本类型
+                        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        if (!TextUtils.isEmpty(userAgent)) {
+                            httpURLConnection.setRequestProperty("User-Agent", userAgent);
+                        }
+                        if (!TextUtils.isEmpty(referer)) {
+                            httpURLConnection.setRequestProperty("Referer", referer);
+                        }
+                        if (!TextUtils.isEmpty(cookie)) {
+                            httpURLConnection.setRequestProperty("Cookie", cookie);
+                        }
+                        httpURLConnection.connect();
+
+                        int response = httpURLConnection.getResponseCode();            //获得服务器的响应码
+                        if(response == HttpURLConnection.HTTP_OK || response == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                            is = httpURLConnection.getInputStream();   //处理服务器的响应结果
+                            if (is == null) {
+                                return null;
+                            }
+                            out = new FileOutputStream(picFile);
+                            byte[] b = new byte[1024];
+                            int end;
+                            while ((end = is.read(b)) != -1) {
+                                out.write(b, 0, end);
+                            }
+
+                            if (is != null) {
+                                is.close();
+                            }
+
+                            if (out != null) {
+                                out.close();
+                            }
+                        } else {
                             return null;
-                        }
-                        out = new FileOutputStream(picFile);
-                        byte[] b = new byte[1024];
-                        int end;
-                        while ((end = is.read(b)) != -1) {
-                            out.write(b, 0, end);
-                        }
-
-                        if (is != null) {
-                            is.close();
-                        }
-
-                        if (out != null) {
-                            out.close();
                         }
 
                     } catch (FileNotFoundException e) {

@@ -731,7 +731,11 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                                     public void onAllGranted(boolean sync) {
                                         String url = hitTestResult.getExtra();
                                         // 下载图片到本地
-                                        DownPicUtil.downPic(url, new DownPicUtil.DownFinishListener() {
+                                        CookieSyncManager.createInstance(AwesomeWebViewActivity.this);
+                                        CookieSyncManager.getInstance().sync();
+                                        CookieManager cookieManager = CookieManager.getInstance();
+                                        String cookie = cookieManager.getCookie(webView.getUrl());
+                                        DownPicUtil.downPic(url, webView.getSettings().getUserAgentString(), webView.getUrl(), cookie, new DownPicUtil.DownFinishListener() {
 
                                             @Override
                                             public void onDownFinish(String path) {
