@@ -3,7 +3,7 @@
     <title>Awesome Web View</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <style>button{width: 100%}</style>
+    <style>button{width: 100%} input{width: 100%}</style>
     <script type="text/javascript">
        function call(){
             var value = document.getElementById("input").value;
@@ -40,11 +40,12 @@
 <br>
 
 <p>*** JS Dialogs:</p>
-<p><input type="text" id="input" value="default"/>
-<input type="button" value="Click to show input in alert" onclick="call()"/></p>
-<p><input type="button" value="alert" onclick="onAlert()"/>
-<input type="button" value="confirm" onclick="onConfirm()"/>
-<input type="button" value="prompt" onclick="onPrompt()"/></p>
+<p><input type="text" id="input" value="default"/></p>
+<p><input type="button" value="Click to show input in alert" onclick="call()"/></p>
+<hr>
+<p><input type="button" value="alert" onclick="onAlert()"/></p>
+<p><input type="button" value="confirm" onclick="onConfirm()"/></p>
+<p><input type="button" value="prompt" onclick="onPrompt()"/></p>
 <br>
 
 <p>*** Long press to save photo</p>
@@ -52,7 +53,7 @@
 <p>
     https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
     <br>
-    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="100%"></p>
+    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="200px"></p>
 <hr>
 <p>
     Base64 image，the src element in the img tag is not a url, but a base64 string

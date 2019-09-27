@@ -45,8 +45,8 @@ webViewAudioEnabled(boolean webViewAudioEnabled);    // Dynamic permission handl
 #### Save Photo after Long Press
 
 You can save photos after long press on the photo. Photos will be saved to download directory. File name is tried to be the same with what in url of photo.  
-If the original extension is error, such as "jpg" but actually is "png", it can even be auto corrected.  
-if the file exists, auto rename is on, such as "xxx.jpg", "xxx(1).jpg", "xxx(2).jpg" ...  
+Some images may have urls with no extension or even with error extension, such as "jpg" but actually is "png". Extensions such as ```jpg/png/gif/webp``` will be added or corrected automatically after the photo is downloaded.  
+if the image file already exists, auto rename is on, such as "xxx.jpg", "xxx(1).jpg", "xxx(2).jpg" ...  
 If the image resource has anti-crawl mechanism, UA and Referer and Cookie in Headers while downloading can hack it.  
 If the image is Base64 encoded, you can even save it, because there is auto Base64 decoding.
 
@@ -60,8 +60,6 @@ stringResPhotoSaveFailed(@StringRes int stringResPhotoSaveFailed)
 ```xml
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 ```
-
-Some websites may use image files with no extension, so the photo downloaded may not be recognized by your gallery app. AwesomeWebView will automatically handle this condition. Extensions such as ```jpg/png/gif/webp``` will be added automatically after the photo is downloaded.
 
 #### File Chooser
 
