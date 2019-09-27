@@ -50,7 +50,7 @@ public  class DownPicUtil {
                 String[] split = url.split("/");
                 fileName = split[split.length - 1];
                 // 创建目标文件,不是文件夹
-                File picFile = new File(filePath + File.separator + fileName);
+                File picFile = new File(filePath + File.separator + System.currentTimeMillis());
                 if(! picFile.exists()) {
                     // if file exists, do not download again
                     try {
@@ -84,37 +84,29 @@ public  class DownPicUtil {
                     }
                 }
 
+                // 提取无拓展名的文件名
+                String extension = FormatHelper.getExtension(picFile);
                 String[] extensions = fileName.split("\\.");
-                int length = extensions.length;
-                if (length == 0 ||
-                        !extensions[length - 1].equals("jpg") &&
-                        !extensions[length - 1].equals("jpeg") &&
-                        !extensions[length - 1].equals("jpe") &&
-                        !extensions[length - 1].equals("jif") &&
-                        !extensions[length - 1].equals("jfif") &&
-                        !extensions[length - 1].equals("jfi") &&
-                        !extensions[length - 1].equals("png") &&
-                        !extensions[length - 1].equals("webp") &&
-                        !extensions[length - 1].equals("gif")) {
-                    // with no image extension
-                    String extension = FormatHelper.getExtension(picFile);
-                    if (extension == null) {
-                        return picFile.getPath();
-                    }
-                    String newFileName = fileName + "." + extension;
-                    File newFile = new File(filePath + File.separator + newFileName);
-                    if (newFile.exists()) {
-                        // if file of new name exists, use the existing file
-                        return newFile.getPath();
-                    }
-                    if (rename(picFile, newFileName)) {
-                        return newFile.getPath();
-                    } else {
-                        return null;
-                    }
+                int splitLength = extensions.length;
+                String newFileNameNoExtension;
+                if (splitLength > 1) {
+                    newFileNameNoExtension = fileName.substring(0, fileName.length() - extensions[splitLength - 1].length() - 1);
+                } else {
+                    newFileNameNoExtension = fileName;
                 }
 
-                return picFile.getPath();
+                if (extension == null) {
+                    // 不支持解析的格式，使用原拓展名
+                    if (splitLength > 1) {
+                        // 有拓展名，在原文件名基础上递增重命名
+                        return renamePic(picFile, filePath, newFileNameNoExtension, extensions[splitLength - 1]);
+                    } else {
+                        // 无拓展名，整个文件名递增重命名
+                        return renamePic(picFile, filePath, newFileNameNoExtension, null);
+                    }
+                }
+                // 支持解析的格式
+                return renamePic(picFile, filePath, newFileNameNoExtension, extension);
             }
 
             @Override
@@ -127,6 +119,24 @@ public  class DownPicUtil {
                 }
             }
         }.execute();
+    }
+
+    private static String renamePic(File picFile, String filePath, String newFileNameNoExtension, String extension) {
+        String extensionWithPoint = TextUtils.isEmpty(extension)? "": "." + extension;
+        String newFileName = newFileNameNoExtension + extensionWithPoint;
+        File newFile = new File(filePath + File.separator + newFileName);
+        int count = 1;
+        while (newFile.exists()) {
+            // if file of new name exists, add (count) in filename;
+            newFileName = newFileNameNoExtension + "(" + count + ")" + extensionWithPoint;
+            newFile = new File(filePath + File.separator + newFileName);
+            count ++;
+        }
+        if (rename(picFile, newFileName)) {
+            return newFile.getPath();
+        } else {
+            return null;
+        }
     }
 
     private static boolean rename(final File file, final String newName) {
