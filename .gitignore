@@ -11,6 +11,8 @@
 # Generated files
 bin/
 gen/
+.externalNativeBuild/
+.cxx/
 
 # Gradle files
 .gradle/
