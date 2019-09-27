@@ -44,7 +44,11 @@ webViewAudioEnabled(boolean webViewAudioEnabled);    // Dynamic permission handl
 
 #### Save Photo after Long Press
 
-You can save photos after long press on the photo. Photos will be saved to download directory. File name is kept to be the same with what in url of photo.
+You can save photos after long press on the photo. Photos will be saved to download directory. File name is tried to be the same with what in url of photo.  
+If the original extension is error, such as "jpg" but actually is "png", it can even be auto corrected.  
+if the file exists, auto rename is on, such as "xxx.jpg", "xxx(1).jpg", "xxx(2).jpg" ...  
+If the image resource has anti-crawl mechanism, UA and Referer and Cookie in Headers while downloading can hack it.  
+If the image is Base64 encoded, you can even save it, because there is auto Base64 decoding.
 
 ```java
 showMenuSavePhoto(boolean showMenuSavePhoto);    // Dynamic permission handled
