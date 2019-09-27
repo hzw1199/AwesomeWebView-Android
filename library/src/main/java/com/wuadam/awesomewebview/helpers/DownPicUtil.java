@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -59,54 +60,62 @@ public  class DownPicUtil {
                 String[] split = url.split("/");
                 fileName = split[split.length - 1];
                 // 创建目标文件,不是文件夹
-                File picFile = new File(filePath + File.separator + System.currentTimeMillis());
+                String now = String.valueOf(System.currentTimeMillis());
+                File picFile = new File(filePath + File.separator + now);
                 if(! picFile.exists()) {
                     // if file exists, do not download again
                     try {
-                        URL picUrl = new URL(url);
-                        //通过图片的链接打开输入流
-                        HttpURLConnection httpURLConnection = (HttpURLConnection)picUrl.openConnection();
-                        httpURLConnection.setConnectTimeout(10000);           //设置连接超时时间
-                        httpURLConnection.setReadTimeout(30000);
-                        httpURLConnection.setDoInput(true);                  //打开输入流，以便从服务器获取数据
-                        httpURLConnection.setDoOutput(false);                 //Get请求不需要DoOutPut
-                        httpURLConnection.setRequestMethod("GET");          //设置以Get方式请求数据
-                        httpURLConnection.setUseCaches(false);               //不使用缓存
-                        //设置请求体的类型是文本类型
-                        httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        if (!TextUtils.isEmpty(userAgent)) {
-                            httpURLConnection.setRequestProperty("User-Agent", userAgent);
-                        }
-                        if (!TextUtils.isEmpty(referer)) {
-                            httpURLConnection.setRequestProperty("Referer", referer);
-                        }
-                        if (!TextUtils.isEmpty(cookie)) {
-                            httpURLConnection.setRequestProperty("Cookie", cookie);
-                        }
-                        httpURLConnection.connect();
+                        Base64ImgHelper base64ImgHelper = new Base64ImgHelper(url);
+                        if (base64ImgHelper.isBase64Img()) {
+                            fileName = now;
+                            byte[] image = base64ImgHelper.decode();
+                            is = new ByteArrayInputStream(image);   //处理服务器的响应结果
+                        } else {
+                            URL picUrl = new URL(url);
+                            //通过图片的链接打开输入流
+                            HttpURLConnection httpURLConnection = (HttpURLConnection) picUrl.openConnection();
+                            httpURLConnection.setConnectTimeout(10000);           //设置连接超时时间
+                            httpURLConnection.setReadTimeout(30000);
+                            httpURLConnection.setDoInput(true);                  //打开输入流，以便从服务器获取数据
+                            httpURLConnection.setDoOutput(false);                 //Get请求不需要DoOutPut
+                            httpURLConnection.setRequestMethod("GET");          //设置以Get方式请求数据
+                            httpURLConnection.setUseCaches(false);               //不使用缓存
+                            //设置请求体的类型是文本类型
+                            httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                            if (!TextUtils.isEmpty(userAgent)) {
+                                httpURLConnection.setRequestProperty("User-Agent", userAgent);
+                            }
+                            if (!TextUtils.isEmpty(referer)) {
+                                httpURLConnection.setRequestProperty("Referer", referer);
+                            }
+                            if (!TextUtils.isEmpty(cookie)) {
+                                httpURLConnection.setRequestProperty("Cookie", cookie);
+                            }
+                            httpURLConnection.connect();
 
-                        int response = httpURLConnection.getResponseCode();            //获得服务器的响应码
-                        if(response == HttpURLConnection.HTTP_OK || response == HttpURLConnection.HTTP_NOT_MODIFIED) {
-                            is = httpURLConnection.getInputStream();   //处理服务器的响应结果
-                            if (is == null) {
+                            int response = httpURLConnection.getResponseCode();            //获得服务器的响应码
+                            if (response == HttpURLConnection.HTTP_OK || response == HttpURLConnection.HTTP_NOT_MODIFIED) {
+                                is = httpURLConnection.getInputStream();   //处理服务器的响应结果
+                                if (is == null) {
+                                    return null;
+                                }
+                            } else {
                                 return null;
                             }
-                            out = new FileOutputStream(picFile);
-                            byte[] b = new byte[1024];
-                            int end;
-                            while ((end = is.read(b)) != -1) {
-                                out.write(b, 0, end);
-                            }
+                        }
+                        out = new FileOutputStream(picFile);
+                        byte[] b = new byte[1024];
+                        int end;
+                        while ((end = is.read(b)) != -1) {
+                            out.write(b, 0, end);
+                        }
 
-                            if (is != null) {
-                                is.close();
-                            }
+                        if (is != null) {
+                            is.close();
+                        }
 
-                            if (out != null) {
-                                out.close();
-                            }
-                        } else {
-                            return null;
+                        if (out != null) {
+                            out.close();
                         }
 
                     } catch (FileNotFoundException e) {
