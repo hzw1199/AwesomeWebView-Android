@@ -26,6 +26,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageButton;
@@ -1481,6 +1482,15 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 filePickerFilePath.onReceiveValue(null);
             }
             filePickerFilePath = filePathCallback;
+
+            Intent takePictureIntent = createCameraCaptureIntent();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fileChooserParams.isCaptureEnabled() && fileChooserParams.getMode() == FileChooserParams.MODE_OPEN) {
+                // capture="camera" and without multiple
+                if (takePictureIntent != null) {
+                    startActivityForResult(takePictureIntent, FILE_PICKER_REQ_CODE);
+                }
+                return true;
+            }
             Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
             contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
             contentSelectionIntent.setType(FILE_TYPE);
@@ -1488,21 +1498,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
                 contentSelectionIntent.putExtra(Intent.EXTRA_MIME_TYPES, fileChooserParams.getAcceptTypes());
             }
             Intent[] intentArray;
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(AwesomeWebViewActivity.this.getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImage();
-                } catch (IOException ex) {
-//                            Log.e("", "Image file creation failed", ex);
-                }
-                if (photoFile != null) {
-                    filePickerCamMessage = "file:" + photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                } else {
-                    takePictureIntent = null;
-                }
-            }
             if (takePictureIntent != null) {
                 intentArray = new Intent[]{takePictureIntent};
             } else {
@@ -1515,6 +1510,32 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             startActivityForResult(chooserIntent, FILE_PICKER_REQ_CODE);
             return true;
         }
+    }
+
+    private Intent createCameraCaptureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(AwesomeWebViewActivity.this.getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImage();
+            } catch (IOException ex) {
+//                            Log.e("", "Image file creation failed", ex);
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                filePickerCamMessage = "file:" + photoFile.getAbsolutePath();
+
+                Uri photoUri = FileProvider.getUriForFile(
+                        this,
+                        getPackageName() + ".file_provider",
+                        photoFile);
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            } else {
+                takePictureIntent = null;
+            }
+        }
+        return takePictureIntent;
     }
 
     @Override

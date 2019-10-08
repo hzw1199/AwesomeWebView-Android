@@ -32,8 +32,9 @@
 <p><button onclick="window.open('http://tuchuang.org')">File Chooser</button></p>
 <p><button onclick="window.open('https://bl.ocks.org/mchelen/raw/7c595af55da08c4ee986/')">Camera</button></p>
 <p><button onclick="window.open('https://webaudiodemos.appspot.com/volume-meter/index.html')">Audio Record</button></p>
-<p><button onclick="window.open('http://mobilexweb.com/samples/ball.html')">Sensor</button></p>
-<p><button onclick="window.open('weixin://')">App Jump</button></p>
+<p><button onclick="window.open('http://mobilexweb.com/samples/ball.html')">Sensor: Gravity Sensor</button></p>
+<p><button onclick="window.open('https://lamplightdev.github.io/compass/')">Sensor: Magnetic Field Sensor</button></p>
+<p><button onclick="window.open('weixin://')">App Jump: WeChat</button></p>
 <p><button onclick="window.open('https://www.whatismyreferer.com')">Extra Headers</button></p>
 <p><button onclick="window.open('https://tool.lu/useragent')">User Agent Append</button></p>
 <p><button onclick="window.open('http://www.html-kit.com/tools/cookietester/')">Inject Cookie</button></p>
@@ -46,6 +47,22 @@
 <p><input type="button" value="alert" onclick="onAlert()"/></p>
 <p><input type="button" value="confirm" onclick="onConfirm()"/></p>
 <p><input type="button" value="prompt" onclick="onPrompt()"/></p>
+<br>
+
+<p>*** Choose image</p>
+<hr>
+<p>
+    From both camera and album: no capture and multiple attribute
+    <input type="file" accept="image/*"></p>
+<hr>
+<p>
+    From both camera and album: capture="filesystem camera" multiple
+    <input type="file" accept="image/*" capture="filesystem camera" multiple></p>
+<hr>
+<p>
+    From camera only: capture="camera"
+    <input type="file" accept="image/*" capture="camera">
+</p>
 <br>
 
 <p>*** Long press to save photo</p>
