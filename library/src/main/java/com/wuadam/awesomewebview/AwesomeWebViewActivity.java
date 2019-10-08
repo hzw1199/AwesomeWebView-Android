@@ -1470,44 +1470,63 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
         //Handling input[type="file"] requests for android API 21+
         @Override
-        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, final FileChooserParams fileChooserParams) {
             handler.sendEmptyMessage(MSG_CLICK_ON_URL);
 
             if (!fileChooserEnabled) {
                 filePathCallback.onReceiveValue(null);
                 return true;
             }
-            getFile();
             if (filePickerFilePath != null) {
                 filePickerFilePath.onReceiveValue(null);
             }
             filePickerFilePath = filePathCallback;
 
-            Intent takePictureIntent = createCameraCaptureIntent();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fileChooserParams.isCaptureEnabled() && fileChooserParams.getMode() == FileChooserParams.MODE_OPEN) {
-                // capture="camera" and without multiple
-                if (takePictureIntent != null) {
-                    startActivityForResult(takePictureIntent, FILE_PICKER_REQ_CODE);
+            //Checking permission for storage and camera for writing and uploading images
+            String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+            PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
+                @Override
+                public void onAllGranted(boolean sync) {
+                    final Intent takePictureIntent = createCameraCaptureIntent();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fileChooserParams.isCaptureEnabled() && fileChooserParams.getMode() == FileChooserParams.MODE_OPEN) {
+                        // capture="camera" and without multiple
+                        if (takePictureIntent != null) {
+                            startActivityForResult(takePictureIntent, FILE_PICKER_REQ_CODE);
+                        } else {
+                            if (filePickerFilePath != null) {
+                                filePickerFilePath.onReceiveValue(null);
+                                filePickerFilePath = null;
+                            }
+                        }
+                        return;
+                    }
+                    final Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                    contentSelectionIntent.setType(FILE_TYPE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        contentSelectionIntent.putExtra(Intent.EXTRA_MIME_TYPES, fileChooserParams.getAcceptTypes());
+                    }
+                    Intent[] intentArray;
+                    if (takePictureIntent != null) {
+                        intentArray = new Intent[]{takePictureIntent};
+                    } else {
+                        intentArray = new Intent[0];
+                    }
+                    Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, getResources().getString(stringResFileChooserTitle));
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
+                    startActivityForResult(chooserIntent, FILE_PICKER_REQ_CODE);
                 }
-                return true;
-            }
-            Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-            contentSelectionIntent.setType(FILE_TYPE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                contentSelectionIntent.putExtra(Intent.EXTRA_MIME_TYPES, fileChooserParams.getAcceptTypes());
-            }
-            Intent[] intentArray;
-            if (takePictureIntent != null) {
-                intentArray = new Intent[]{takePictureIntent};
-            } else {
-                intentArray = new Intent[0];
-            }
-            Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, getResources().getString(stringResFileChooserTitle));
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-            startActivityForResult(chooserIntent, FILE_PICKER_REQ_CODE);
+
+                @Override
+                public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
+                    if (filePickerFilePath != null) {
+                        filePickerFilePath.onReceiveValue(null);
+                        filePickerFilePath = null;
+                    }
+                }
+            }, perms);
             return true;
         }
     }
@@ -1581,23 +1600,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         String new_name = "file_" + file_name + "_";
         File sd_directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(new_name, ".jpg", sd_directory);
-    }
-
-    //Checking permission for storage and camera for writing and uploading images
-    protected void getFile() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-
-        PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
-            @Override
-            public void onAllGranted(boolean sync) {
-
-            }
-
-            @Override
-            public void onPartlyGranted(List<String> permissionsDenied, boolean sync) {
-
-            }
-        }, perms);
     }
 
     public class MyWebViewClient extends WebViewClient {
