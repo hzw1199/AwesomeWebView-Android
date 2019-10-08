@@ -1487,7 +1487,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             PermissionHelper.CheckPermissions(AwesomeWebViewActivity.this, new PermissionHelper.CheckPermissionListener() {
                 @Override
                 public void onAllGranted(boolean sync) {
-                    final Intent takePictureIntent = createCameraCaptureIntent();
+                    final Intent takePictureIntent = createCameraCaptureIntent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP? fileChooserParams.getAcceptTypes(): null);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && fileChooserParams.isCaptureEnabled() && fileChooserParams.getMode() == FileChooserParams.MODE_OPEN) {
                         // capture="camera" and without multiple
                         if (takePictureIntent != null) {
@@ -1531,23 +1531,27 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
     }
 
-    private Intent createCameraCaptureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private Intent createCameraCaptureIntent(String[] mimeTypes) {
+        boolean isVideo = false;
+        if (mimeTypes != null && mimeTypes.length == 1 && mimeTypes[0] != null && mimeTypes[0].startsWith("video")) {
+            isVideo = true;
+        }
+        Intent takePictureIntent = new Intent(isVideo? MediaStore.ACTION_VIDEO_CAPTURE: MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(AwesomeWebViewActivity.this.getPackageManager()) != null) {
-            File photoFile = null;
+            File imageVideoFile = null;
             try {
-                photoFile = createImage();
+                imageVideoFile = createImageOrVideo(isVideo);
             } catch (IOException ex) {
 //                            Log.e("", "Image file creation failed", ex);
                 ex.printStackTrace();
             }
-            if (photoFile != null) {
-                filePickerCamMessage = "file:" + photoFile.getAbsolutePath();
+            if (imageVideoFile != null) {
+                filePickerCamMessage = "file:" + imageVideoFile.getAbsolutePath();
 
                 Uri photoUri = FileProvider.getUriForFile(
                         this,
                         getPackageName() + ".file_provider",
-                        photoFile);
+                        imageVideoFile);
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
             } else {
@@ -1593,13 +1597,13 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
     }
 
-    //Creating image file for upload
-    protected File createImage() throws IOException {
+    //Creating image or video file for upload
+    protected File createImageOrVideo(boolean isVideo) throws IOException {
         @SuppressLint("SimpleDateFormat")
         String file_name = new SimpleDateFormat("yyyy_mm_ss").format(new Date());
         String new_name = "file_" + file_name + "_";
         File sd_directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(new_name, ".jpg", sd_directory);
+        return File.createTempFile(new_name, isVideo? ".mp4": ".jpg", sd_directory);
     }
 
     public class MyWebViewClient extends WebViewClient {
