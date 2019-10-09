@@ -56,10 +56,11 @@ public  class DownPicUtil {
             @Override
             protected String doInBackground(Void... voids) {
 
-                // 下载文件的名称
+                // 原文件名
                 String[] split = url.split("/");
                 fileName = split[split.length - 1];
-                // 创建目标文件,不是文件夹
+
+                // 创建目标文件，使用时间戳作为临时文件名，确保可以不重复
                 String now = String.valueOf(System.currentTimeMillis());
                 File picFile = new File(filePath + File.separator + now);
                 if(! picFile.exists()) {
@@ -127,8 +128,10 @@ public  class DownPicUtil {
                     }
                 }
 
-                // 提取无拓展名的文件名
+                // 提取文件格式真实拓展名
                 String extension = FormatHelper.getExtension(picFile);
+
+                // 提取不包含拓展名的原文件名
                 String[] extensions = fileName.split("\\.");
                 int splitLength = extensions.length;
                 String newFileNameNoExtension;
@@ -138,18 +141,24 @@ public  class DownPicUtil {
                     newFileNameNoExtension = fileName;
                 }
 
+                // 重命名文件
                 if (extension == null) {
-                    // 不支持解析的格式，使用原拓展名
+                    // 不支持解析的格式，使用原文件名、原拓展名
                     if (splitLength > 1) {
                         // 有拓展名，在原文件名基础上递增重命名
-                        return renamePic(picFile, filePath, newFileNameNoExtension, extensions[splitLength - 1]);
+                        return renamePic(picFile, filePath, newFileNameNoExtension, extensions[splitLength - 1], MODE.MODE_INCREMENT);
                     } else {
                         // 无拓展名，整个文件名递增重命名
-                        return renamePic(picFile, filePath, newFileNameNoExtension, null);
+                        return renamePic(picFile, filePath, newFileNameNoExtension, null, MODE.MODE_INCREMENT);
                     }
                 }
-                // 支持解析的格式
-                return renamePic(picFile, filePath, newFileNameNoExtension, extension);
+                // 支持解析的格式，使用md5文件名、真实拓展名
+                String md5 = Md5Helper.getFileMD5ToString(picFile);
+                if (TextUtils.isEmpty(md5)) {
+                    return renamePic(picFile, filePath, newFileNameNoExtension, extension, MODE.MODE_INCREMENT);
+                } else {
+                    return renamePic(picFile, filePath, md5.substring(0, 16), extension, MODE.MODE_IGNORE);
+                }
             }
 
             @Override
@@ -164,17 +173,50 @@ public  class DownPicUtil {
         }.execute();
     }
 
-    private static String renamePic(File picFile, String filePath, String newFileNameNoExtension, String extension) {
+    private enum MODE{
+        /**
+         * 已有文件名一致的文件，文件名后加上地增量(n)
+         */
+        MODE_INCREMENT,
+        /**
+         * 已有文件名一致的文件，不执行
+         */
+        MODE_IGNORE,
+        /**
+         * 已有文件名一致的文件，覆盖
+         */
+        MODE_OVERRIDE
+    }
+
+    private static String renamePic(File picFile, String filePath, String newFileNameNoExtension, String extension, MODE mode) {
         String extensionWithPoint = TextUtils.isEmpty(extension)? "": "." + extension;
         String newFileName = newFileNameNoExtension + extensionWithPoint;
         File newFile = new File(filePath + File.separator + newFileName);
-        int count = 1;
-        while (newFile.exists()) {
-            // if file of new name exists, add (count) in filename;
-            newFileName = newFileNameNoExtension + "(" + count + ")" + extensionWithPoint;
-            newFile = new File(filePath + File.separator + newFileName);
-            count ++;
+        switch (mode) {
+
+            case MODE_INCREMENT:
+                int count = 1;
+                while (newFile.exists()) {
+                    // if file of new name exists, add (count) in filename;
+                    newFileName = newFileNameNoExtension + "(" + count + ")" + extensionWithPoint;
+                    newFile = new File(filePath + File.separator + newFileName);
+                    count ++;
+                }
+                break;
+            case MODE_IGNORE:
+                if (newFile.exists()) {
+                    return newFile.getPath();
+                }
+                break;
+            case MODE_OVERRIDE:
+                if (newFile.exists()) {
+                    if (!newFile.delete()) {
+                        return null;
+                    }
+                }
+                break;
         }
+
         if (rename(picFile, newFileName)) {
             return newFile.getPath();
         } else {
