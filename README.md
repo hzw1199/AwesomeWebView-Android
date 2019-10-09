@@ -44,9 +44,9 @@ webViewAudioEnabled(boolean webViewAudioEnabled);    // Dynamic permission handl
 
 #### Save Photo after Long Press
 
-You can save photos after long press on the photo. Photos will be saved to download directory. File name is tried to be the same with what in url of photo.  
-Some images may have urls with no extension or even with error extension, such as "jpg" but actually is "png". Extensions such as ```jpg/png/gif/webp``` will be added or corrected automatically after the photo is downloaded.  
-if the image file already exists, auto rename is on, such as "xxx.jpg", "xxx(1).jpg", "xxx(2).jpg" ...  
+You can save photos after long press on the photo. Photos will be saved to download directory.  
+Some images may have urls with no extension or even with error extension, such as "jpg" but actually is "png". Extensions like ```jpg/png/gif/webp``` will be added or corrected automatically by analysing file.  
+File name will be the md5 string, so if the file already exists, it uses the previous file.  
 If the image resource has anti-crawl mechanism, UA and Referer and Cookie in Headers while downloading can hack it.  
 If the image is Base64 encoded, you can even save it, because there is auto Base64 decoding.
 
@@ -71,6 +71,7 @@ fileChooserEnabled(boolean fileChooserEnabled);    // Dynamic permission handled
 ```xml
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 ```
+Support: capture image with camera, capture video with camera, choose image with camera and album, choose video with camera and album, choose file with file browser.
 
 #### Extra Headers
 
