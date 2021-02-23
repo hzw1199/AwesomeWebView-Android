@@ -92,6 +92,17 @@ injectJavaScript(String injectJavaScript);    // Already in FinestWebView
 injectJavaScriptMainPage(boolean injectJavaScriptMainPage);
 ```
 
+#### Javascript Interface
+
+You can add your custom Javascript Interface class extends BaseJsInterface. Then you can make your JS web code to call Java method.
+For example, JS can call your java code to show Toast.
+[demo](/sample/src/main/java/com/wuadam/awesomewebview/sample/ToastJsInterface.java)
+
+```java
+CommonJsHelper.getInstance().addJavascriptInterface(ToastJsInterface.class, "toast");
+injectJavaScript("javascript: window.toast.showToast(\"toast by js interface from \" + window.toast.getSimpleName());")
+```
+
 #### Geo Location
 
 You can acquire location while acquiring locating permission in runtime.
