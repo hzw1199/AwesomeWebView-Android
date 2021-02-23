@@ -72,6 +72,7 @@ import com.wuadam.awesomewebview.helpers.DownPicUtil;
 import com.wuadam.awesomewebview.helpers.PermissionHelper;
 import com.wuadam.awesomewebview.helpers.TypefaceHelper;
 import com.wuadam.awesomewebview.helpers.UrlParser;
+import com.wuadam.awesomewebview.jsInterface.CommonJsHelper;
 import com.wuadam.awesomewebview.listeners.BroadCastManager;
 import com.wuadam.awesomewebview.objects.CustomMenu;
 import com.wuadam.awesomewebview.views.ShadowLayout;
@@ -1117,6 +1118,10 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         }
     }
 
+    protected void addJavascriptInterface() {
+        CommonJsHelper.getInstance().addJavascriptInterface(webView);
+    }
+
     protected void load() {
         if (data != null) {
             webView.loadData(data, mimeType, encoding);
@@ -1192,6 +1197,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         layoutViews();
         initializeViews();
         injectCookie();
+        addJavascriptInterface();
         load();
     }
 

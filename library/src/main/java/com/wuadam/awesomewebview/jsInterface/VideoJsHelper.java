@@ -1,4 +1,4 @@
-package com.wuadam.awesomewebview.helpers;
+package com.wuadam.awesomewebview.jsInterface;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;

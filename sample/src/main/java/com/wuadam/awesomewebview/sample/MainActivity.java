@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.wuadam.awesomewebview.AwesomeWebView;
+import com.wuadam.awesomewebview.jsInterface.CommonJsHelper;
 import com.wuadam.awesomewebview.listeners.WebViewListener;
 import com.wuadam.awesomewebview.objects.CustomMenu;
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         if (view.getId() == R.id.functionPlayground) {
+            CommonJsHelper.getInstance().addJavascriptInterface(ToastJsInterface.class, "toast");
+
             Map<String, String> headers = new HashMap<>();
             headers.put("Referer", "https://github.com/hzw1199");
 
@@ -51,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
                     .fileChooserEnabled(true)
                     .setHeader(headers)
                     .headersMainPage(false)
-                    .injectJavaScript("javascript: alert(\"This is js inject\")")
+//                    .injectJavaScript("javascript: alert(\"This is js inject\")")
+                    .injectJavaScript("javascript: window.toast.showToast(\"toast by js interface from \" + window.toast.getSimpleName());")
                     .injectJavaScriptMainPage(true)
                     .webViewUserAgentString("AwesomeWebView")
                     .webViewUserAgentAppend(true)

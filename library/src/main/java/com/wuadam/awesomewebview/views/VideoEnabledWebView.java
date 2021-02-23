@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.wuadam.awesomewebview.helpers.VideoJsHelper;
+import com.wuadam.awesomewebview.jsInterface.VideoJsHelper;
 
 import java.util.Map;
 
