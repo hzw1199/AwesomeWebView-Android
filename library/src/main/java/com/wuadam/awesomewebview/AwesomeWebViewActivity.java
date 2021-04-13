@@ -1556,7 +1556,7 @@ public class AwesomeWebViewActivity extends AppCompatActivity
 
                 Uri photoUri = FileProvider.getUriForFile(
                         this,
-                        getPackageName() + ".file_provider",
+                        getPackageName() + ".awesome_web_view.file_provider",
                         imageVideoFile);
 
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
