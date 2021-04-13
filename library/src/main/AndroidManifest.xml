@@ -3,7 +3,7 @@
 
     <application>
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name=".helpers.FileProvider4WebView"
             android:authorities="${applicationId}.awesome_web_view.file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
