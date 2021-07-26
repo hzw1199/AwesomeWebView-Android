@@ -1,6 +1,6 @@
 package com.wuadam.awesomewebview.objects;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import java.io.Serializable;
 
