@@ -153,7 +153,6 @@ public class AwesomeWebView {
         protected Boolean webViewAllowFileAccessFromFileURLs;
         protected String webViewGeolocationDatabasePath;
         protected Boolean webViewAppCacheEnabled;
-        protected String webViewAppCachePath;
         protected Boolean webViewDatabaseEnabled;
         protected Boolean webViewDomStorageEnabled;
         protected Boolean webViewGeolocationEnabled;
@@ -860,11 +859,6 @@ public class AwesomeWebView {
 
         public Builder webViewAppCacheEnabled(boolean webViewAppCacheEnabled) {
             this.webViewAppCacheEnabled = webViewAppCacheEnabled;
-            return this;
-        }
-
-        public Builder webViewAppCachePath(String webViewAppCachePath) {
-            this.webViewAppCachePath = webViewAppCachePath;
             return this;
         }
 

@@ -210,7 +210,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
     protected Boolean webViewAllowFileAccessFromFileURLs;
     protected String webViewGeolocationDatabasePath;
     protected Boolean webViewAppCacheEnabled;
-    protected String webViewAppCachePath;
     protected Boolean webViewDatabaseEnabled;
     protected Boolean webViewDomStorageEnabled;
     protected Boolean webViewGeolocationEnabled;
@@ -469,7 +468,6 @@ public class AwesomeWebViewActivity extends AppCompatActivity
         webViewGeolocationDatabasePath = builder.webViewGeolocationDatabasePath;
         webViewAppCacheEnabled =
                 builder.webViewAppCacheEnabled != null ? builder.webViewAppCacheEnabled : true;
-        webViewAppCachePath = builder.webViewAppCachePath;
         webViewDatabaseEnabled = builder.webViewDatabaseEnabled;
         webViewDomStorageEnabled =
                 builder.webViewDomStorageEnabled != null ? builder.webViewDomStorageEnabled : true;
@@ -870,8 +868,14 @@ public class AwesomeWebViewActivity extends AppCompatActivity
             if (webViewGeolocationDatabasePath != null) {
                 settings.setGeolocationDatabasePath(webViewGeolocationDatabasePath);
             }
-            if (webViewAppCacheEnabled != null) settings.setAppCacheEnabled(webViewAppCacheEnabled);
-            if (webViewAppCachePath != null) settings.setAppCachePath(webViewAppCachePath);
+            if (webViewAppCacheEnabled != null
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (webViewAppCacheEnabled) {
+                    settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+                } else {
+                    settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+                }
+            }
             if (webViewDatabaseEnabled != null) settings.setDatabaseEnabled(webViewDatabaseEnabled);
             if (webViewDomStorageEnabled != null)
                 settings.setDomStorageEnabled(webViewDomStorageEnabled);
