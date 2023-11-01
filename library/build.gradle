@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.hzw1199'
 
 android {
     compileSdkVersion 28
@@ -8,15 +6,14 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 1
-        versionName '1.0'
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'proguard-rules.pro'
     }
-
-    lintOptions {
+    namespace 'com.wuadam.awesomewebview'
+    lint {
         abortOnError false
     }
+
 }
 
 dependencies {
