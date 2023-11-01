@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: 'maven_publish.gradle'
 
 android {
     compileSdk 34
@@ -14,6 +15,13 @@ android {
         abortOnError false
     }
 
+    // https://stackoverflow.com/a/71366104
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
