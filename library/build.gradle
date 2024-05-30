@@ -15,6 +15,7 @@ android {
         abortOnError false
     }
 
+    // https://developer.android.com/build/publish-library/configure-pub-variants?hl=zh-cn#single-pub-var
     // https://stackoverflow.com/a/71366104
     publishing {
         singleVariant('release') {

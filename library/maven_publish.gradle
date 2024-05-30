@@ -1,20 +1,15 @@
 apply plugin: 'maven-publish'
 
-// Because the components are created only during the afterEvaluate phase, you must
-// configure your publications using the afterEvaluate() lifecycle method.
-afterEvaluate {
-//    println("Components: " + components*.name)
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
+// https://developer.android.com/build/publish-library/upload-library?hl=zh-cn#create-pub
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.hzw1199'
+            artifactId = 'AwesomeWebView-Android'
+            version = '2.1.0'
 
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.github.hzw1199'
-                artifactId = 'AwesomeWebView-Android'
-                version = '2.1.0'
+            afterEvaluate {
+                from components.release
             }
         }
     }
