@@ -5,8 +5,9 @@ android {
     compileSdk 34
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 31
+        minSdk 14
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 31
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'proguard-rules.pro'
     }

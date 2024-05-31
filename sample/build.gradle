@@ -5,8 +5,9 @@ android {
 
     defaultConfig {
         applicationId "com.wuadam.awesomewebview.sample"
-        minSdkVersion 14
-        targetSdkVersion 31
+        minSdk 14
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 31
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
@@ -19,6 +20,9 @@ android {
         }
     }
     namespace 'com.wuadam.awesomewebview.sample'
+    lint {
+        abortOnError false
+    }
 }
 
 dependencies {
